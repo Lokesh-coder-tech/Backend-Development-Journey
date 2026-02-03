@@ -6,7 +6,7 @@ function App() {
   const [notes, setnotes] = useState([])
 
   function fetchNotes() {
-   axios.get('http://localhost:3000/notes')
+   axios.get('http://localhost:3000/api/notes')
     .then((res) => {
     setnotes(res.data.notes)
    })
@@ -22,7 +22,7 @@ function App() {
 
     console.log(title.value, description.value);
     
-    axios.post("http://localhost:3000/notes", {
+    axios.post("http://localhost:3000/api/notes", {
       title:title.value,
       description:description.value
     })
@@ -35,7 +35,7 @@ function App() {
   }
 
   function handleDeleteNote(noteId) {
-axios.delete("http://localhost:3000/notes/"+noteId)
+axios.delete("http://localhost:3000/api/notes/"+noteId)
    .then(res => {
     console.log(res.data);
     fetchNotes()

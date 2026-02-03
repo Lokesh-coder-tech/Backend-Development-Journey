@@ -7,7 +7,7 @@ app.use(cors())
 app.use(express.json())
 app.use(express.static("./public"))
 
-app.post("/notes", async (req, res) => {
+app.post("/api/notes", async (req, res) => {
     const {title, description} = req.body
 
     const note = await noteModel.create({
@@ -19,7 +19,7 @@ app.post("/notes", async (req, res) => {
     })
 })
 
-app.get("/notes", async (req, res) => {
+app.get("/api/notes", async (req, res) => {
     const notes = await noteModel.find()
 
     res.status(200).json({
@@ -28,7 +28,7 @@ app.get("/notes", async (req, res) => {
     })
 })
 
-app.delete("/notes/:id", async (req, res) => {
+app.delete("/api/notes/:id", async (req, res) => {
    const id = req.params.id
 
    await noteModel.findByIdAndDelete(id)
@@ -39,7 +39,7 @@ app.delete("/notes/:id", async (req, res) => {
 
 })
 
-app.patch("/notes/:id", async (req, res) => {
+app.patch("/api/notes/:id", async (req, res) => {
     const id = req.params.id
     const {description} = req.body
 
