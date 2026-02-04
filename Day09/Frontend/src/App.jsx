@@ -43,12 +43,22 @@ axios.delete("https://backend-development-journey-1.onrender.com/api/notes/"+not
     
   }
 
+  function handleUpdateNote(noteId){
+    const newDescription = prompt('Enter your description');
+
+    axios.patch("https://backend-development-journey-1.onrender.com/api/notes/"+noteId,{description:newDescription})
+    .then((res) => {
+      console.log(res.data)
+      fetchNotes();
+    })
+  }
+
   return (
     <>
       <form className='note-create-form' onSubmit={handleSubmit}>
         <input name='title' type="text" placeholder='Enter title' />
         <input name='description' type="text" placeholder='Enter Description ' />
-        <button>Create note</button>
+        <button className='btn-form'>Create note</button>
       </form>
       <div className="notes">
         {
@@ -56,7 +66,8 @@ axios.delete("https://backend-development-journey-1.onrender.com/api/notes/"+not
             return <div className="note">
               <h1>{note.title}</h1>
               <p>{note.description}</p>
-              <button onClick={() => {handleDeleteNote(note._id)}}>Delete</button>
+              <button className='btn1' onClick={() => {handleDeleteNote(note._id)}}>Delete</button>
+              <button className='btn2' onClick={() => {handleUpdateNote(note._id)}}>Update</button>
             </div>
           })
         }
