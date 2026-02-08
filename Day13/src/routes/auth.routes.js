@@ -45,8 +45,6 @@ authRouter.post("/protected", (req, res) => {
     })
 })
 
-
-
 authRouter.post("/login", async(req, res) => {
     const {email, password} =  req.body
 
@@ -74,7 +72,7 @@ authRouter.post("/login", async(req, res) => {
 
    res.status(200).json({
     message: "user logged in",
-    user,
+    user
    })
 })
 
