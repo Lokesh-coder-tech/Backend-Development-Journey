@@ -1,7 +1,7 @@
 const postModel = require('../models/post.models')
-const ImageKit = require("@imagekit/nodejs")
+const ImageKit = require("@imagekit/nodejs/index.js")
 require("dotenv").config()
-const { toFile } = require("@imagekit/nodejs")
+const { toFile } = require("@imagekit/nodejs/index.js")
 
 const imagekit = new ImageKit({
     privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
