@@ -76,6 +76,7 @@ async function getPostDetails(req, res) {
     })
 }
 
+
 module.exports = {
     createPostController,
     getPostController,
