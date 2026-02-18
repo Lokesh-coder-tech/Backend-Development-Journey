@@ -8,6 +8,7 @@ userRouter.post("/follow/:username", identifyUser, userController.followUserCont
 userRouter.post("/unfollow/:username",
     identifyUser, userController.unfollowUserController
 )
+userRouter.post("/follow-request/:username", identifyUser, userController.followRequestController)
 
 
 module.exports = userRouter

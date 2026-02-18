@@ -63,8 +63,34 @@ await followModel.findByIdAndDelete(isUserFollowing._id)
     message: `You have unfollowed ${followeeUsername}`  
  })
 }
+async function followRequestController(req, res){
+    const followerUsername = req.user.username
+    const followeeUsername = req.params.username
+
+    const followRequest = await followModel.findOne({
+        follower: followerUsername,
+        followee: followeeUsername
+    })
+
+    if(!followRequest){
+        return res.status(404).json({
+            message: "follow request not found"
+        })
+    }
+
+    await followModel.findByIdAndUpdate(followRequest._id, {
+        status: "accepted"
+    })
+
+
+
+    res.status(200).json({
+        message: "Follow request accepted"
+    })
+}
 
 module.exports = {
     followUserController,
-    unfollowUserController
+    unfollowUserController,
+    followRequestController
 }
