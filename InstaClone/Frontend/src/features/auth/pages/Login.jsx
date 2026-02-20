@@ -2,26 +2,30 @@ import React from 'react'
 import { useState } from 'react'
 import '../style/form.css'
 import { Link } from 'react-router'
-import axios from 'axios'
+import { useAuth } from '../hooks/useAuth'
+import { useNavigate } from 'react-router'
 
 const Login = () => {
+
+  const {user, loading, handleLogin} = useAuth()
 
   const [username, setusername] = useState("")
   const [password, setpassword] = useState("")
 
-  function handlesubmit(e) {
+  const Navigate = useNavigate()
+
+  async function handlesubmit(e) {
    e.preventDefault()
 
-   axios.post("http://localhost:3000/api/auth/login",{
-    username,
-    password,
-   }, {
-    withCredentials: true,
-   })
-   .then(res => {
-    console.log(res.data);
-   })
+   await handleLogin(username, password)
 
+   Navigate('/')
+
+  }
+  if(loading){
+    return (<main>
+      <h1>Loading...</h1>
+    </main>)
   }
 
   return (
