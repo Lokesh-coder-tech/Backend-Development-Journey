@@ -1,8 +1,8 @@
 const postModel = require('../models/post.models')
+const userModel = require('../models/user.model')
 const likesModel= require('../models/likes.model')
 const ImageKit = require("@imagekit/nodejs/index.js")
 require("dotenv").config()
-const jwt = require('jsonwebtoken')
 const { toFile } = require("@imagekit/nodejs/index.js")
 
 const imagekit = new ImageKit({
@@ -141,10 +141,34 @@ async function unlikePostController(req, res){
     })
 }
 
+async function getFeedController(req, res){
+
+      const user = req.user
+
+    const posts = await Promise.all((await postModel.find({}).populate("user").lean())
+        .map(async (post) => {
+            const isLiked = await likesModel.findOne({
+                user: user.username,
+                post: post._id
+            })
+
+            post.isLiked = Boolean(isLiked)
+
+            return post
+        }))
+
+
+    res.status(200).json({
+        message:"posts fetched successfully.",
+        posts
+    })
+}
+
 module.exports = {
     createPostController,
     getPostController,
     getPostDetails,
     likePostController,
-    unlikePostController
+    unlikePostController,
+    getFeedController
 }

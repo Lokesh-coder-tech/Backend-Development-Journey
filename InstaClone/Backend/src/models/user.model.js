@@ -13,15 +13,16 @@ const userSchema =  new mongoose.Schema({
    },
    password: {
     type: String,
-    required: [true, "Password is required"]
+    required: [true, "Password is required"],
+    select: false 
    },
    bio: String,
    profileImage: {
     type: String,
-    default:'https://image.com'
+    default:'https://ik.imagekit.io/6o8d6hevj/cohort-2-insta-clone-posts/Test_9600rJhtJ'
    }
 })
 
-const userModel = mongoose.model("user", userSchema)
+const userModel = mongoose.model("users", userSchema)
 
 module.exports = userModel

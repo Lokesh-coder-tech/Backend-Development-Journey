@@ -1,0 +1,75 @@
+// Variables
+$nav-height: 60px;
+$blur-intensity: 12px; // Adjust for more or less blur
+$white-translucent: rgba(255, 255, 255, 0.75); // Semi-transparent white
+
+.nav-bar {
+  // Positioning
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: $nav-height;
+  z-index: 1000;
+  box-sizing: border-box;
+  
+  // Layout
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px; // Slightly more padding for a premium feel
+
+  // Glassmorphism Effect
+  background: $white-translucent;
+  backdrop-filter: blur($blur-intensity);
+  -webkit-backdrop-filter: blur($blur-intensity); // Safari support
+  
+  // Remove standard border and use a very subtle shadow instead
+  border: none;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0;
+    letter-spacing: -0.5px;
+    cursor: pointer;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  button {
+    // Styling
+    background-color: #0095f6;
+    color: white;
+    padding: 8px 18px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    // Explicitly remove border and outline
+    border: none; 
+    outline: none;
+
+    &:hover {
+      background-color: #1877f2;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 149, 246, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  // Mobile responsiveness
+  @media (max-width: 768px) {
+    padding: 0 20px;
+    
+    h1 {
+      font-size: 1.3rem;
+    }
+  }
+}
