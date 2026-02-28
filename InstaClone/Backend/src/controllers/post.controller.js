@@ -143,7 +143,7 @@ async function unlikePostController(req, res){
 
 async function getFeedController(req, res){
 
-      const user = req.user
+    const user = req.user
 
     const posts = await Promise.all((await postModel.find({}).populate("user").lean())
         .map(async (post) => {

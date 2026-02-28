@@ -1,6 +1,8 @@
 import React from 'react'
 
-const Post = ({user, post}) => {
+const Post = ({user, post, handleLike, handleUnLike }) => {
+
+
   return (
     <div className='post'>
        <div className="user">
@@ -12,7 +14,9 @@ const Post = ({user, post}) => {
                 <img src={post.imgUrl} alt="" />
                 <div className="icons">
                     <div className="left">
-                        <button><i className={post.isLiked?"like":""}  class="ri-heart-line"></i></button>
+                        <button><i className={post.isLiked?"like":""} 
+                        onClick={() => {post.isLiked? handleUnLike(post._id) : handleLike(post._id)}} 
+                        class="ri-heart-line"></i></button>
                         <button><i class="ri-chat-4-line"></i></button>
                         <button><i class="ri-send-plane-2-line"></i></button>
                     </div>
