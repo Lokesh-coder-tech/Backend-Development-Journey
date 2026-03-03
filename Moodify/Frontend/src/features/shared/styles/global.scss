@@ -9,3 +9,11 @@ body,
     background-color: rgb(17, 17, 17);
     color: whitesmoke;
 }
+a{
+    text-decoration: none;
+    color: #4777F9;
+}
+a:hover{
+    cursor: pointer;
+text-decoration: underline;
+}
