@@ -1,0 +1,177 @@
+// Color Variables for consistency
+$primary-blue: #00f2ff;
+$secondary-blue: #006aff;
+$bg-glass: rgba(10, 15, 28, 0.8);
+$text-main: #ffffff;
+$text-dim: #b0b0b0;
+
+.player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    // --- Glassmorphism Effect ---
+    background: $bg-glass;
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    z-index: 100;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
+
+    /* ── Song Info ── */
+    &__info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        min-width: 240px;
+        flex: 0 0 auto;
+    }
+
+    &__poster {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px; // Slightly rounder
+        object-fit: cover;
+        box-shadow: 0 0 15px rgba(0, 242, 255, 0.3); // Soft blue glow
+        transition: transform 0.3s ease;
+
+        &:hover {
+            transform: scale(1.05);
+        }
+    }
+
+    &__meta {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    &__title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: $text-main;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    &__mood {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        color: $primary-blue;
+        background: rgba(0, 242, 255, 0.12);
+        padding: 3px 10px;
+        border-radius: 6px;
+        width: fit-content;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        border: 1px solid rgba(0, 242, 255, 0.2);
+    }
+
+    /* ── Progress Section ── */
+    &__progress-wrap {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex: 1;
+    }
+
+    &__time {
+        font-size: 0.75rem;
+        color: $text-dim;
+        font-family: 'Monaco', monospace; // Better for jumping numbers
+    }
+
+    &__progress {
+        position: relative;
+        flex: 1;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        cursor: pointer;
+        overflow: visible;
+
+        &:hover {
+            .player__progress-fill {
+                box-shadow: 0 0 12px $primary-blue;
+            }
+            .player__progress-thumb {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+        }
+    }
+
+    &__progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, $secondary-blue, $primary-blue);
+        border-radius: 10px;
+        position: relative;
+    }
+
+    &__progress-thumb {
+        position: absolute;
+        top: 50%;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 0 10px $primary-blue;
+        opacity: 0;
+        transition: all 0.2s ease;
+    }
+
+    /* ── Playback Controls ── */
+    &__controls {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    &__btn {
+        background: transparent;
+        color: $text-dim;
+        border-radius: 50%;
+        transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:hover {
+            color: $primary-blue;
+            background: rgba(0, 242, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        &--play {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, $secondary-blue, $primary-blue);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(0, 106, 255, 0.4);
+
+            &:hover {
+                background: linear-gradient(135deg, $primary-blue, #fff);
+                color: $secondary-blue;
+                box-shadow: 0 8px 25px rgba(0, 242, 255, 0.6);
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    /* ── Speed & Volume ── */
+    &__speed-option {
+        &.active {
+            background: rgba(0, 242, 255, 0.2);
+            color: $primary-blue;
+            border: 1px solid $primary-blue;
+        }
+    }
+
+    &__volume-slider {
+        &::-webkit-slider-thumb {
+            background: $primary-blue;
+            box-shadow: 0 0 8px rgba(0, 242, 255, 0.8);
+        }
+    }
+}
