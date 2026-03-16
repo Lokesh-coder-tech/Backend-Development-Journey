@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import "dotenv/config";
 
 function authUser(req, res, next) {
   const token = req.cookies.token;
@@ -25,5 +26,4 @@ function authUser(req, res, next) {
     });
   }
 }
-
 export default authUser
