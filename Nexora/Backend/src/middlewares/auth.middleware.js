@@ -1,29 +1,33 @@
 import jwt from "jsonwebtoken";
-import "dotenv/config";
+import "dotenv/config"
 
 function authUser(req, res, next) {
-  const token = req.cookies.token;
 
-  if (!token) {
-    return res.status(401).json({
-      message: "Unauthorized",
-      success: false,
-      err: "No token provided",
-    });
-  }
+    const token = req.cookies.token;
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!token) {
+        return res.status(401).json({
+            message: "Unauthorized",
+            success: false,
+            err: "No token provided"
+        })
+    }
 
-    req.user = decoded;
+    try {
 
-    next();
-  } catch (err) {
-    return res.status(401).json({
-      message: "Unauthorized",
-      success: false,
-      err: "Invalid token",
-    });
-  }
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        req.user = decoded;
+
+        next();
+
+    } catch (err) {
+        return res.status(401).json({
+            message: "Unauthorized",
+            success: false,
+            err: "Invalid token"
+        })
+    }
+
 }
 export default authUser
