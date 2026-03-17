@@ -6,28 +6,56 @@ export const useSong = () => {
 
     const context = useContext(SongContext)
 
-    const {loading, setloading, song, setsong} = context
+    const {loading, setloading, playlist, setPlaylist, currentIndex, setCurrentIndex, song} = context
+
+    function selectSong(index) {
+        if (!playlist?.length) return
+        const safeIndex = Math.max(0, Math.min(playlist.length - 1, index))
+        setCurrentIndex(safeIndex)
+    }
 
     async function handleGetSong({mood}) {
       try {
         setloading(true);
-        console.log("Fetching song for mood:", mood); // Check if mood is 'sad', 'happy', etc.
-        
+        console.log("Fetching playlist for mood:", mood);
+
         const data = await getSong({ mood });
-        console.log("API Response:", data); // Is this undefined?
-        
-        if (data && data.song) {
-            setsong(data.song);
+        console.log("API Response:", data);
+
+        if (data && Array.isArray(data.songs) && data.songs.length > 0) {
+            setPlaylist(data.songs);
+            setCurrentIndex(0);
         } else {
-            console.error("Song not found in response for mood:", mood);
-            // Optionally set a fallback song here
+            console.error("No songs found in response for mood:", mood);
+            // Optionally keep existing playlist or set a default playlist here
         }
     } catch (error) {
-        console.error("Failed to fetch song:", error);
+        console.error("Failed to fetch songs:", error);
     } finally {
         setloading(false);
     }
     }
 
-    return({loading, song, handleGetSong})
+    function nextSong() {
+        if (!playlist?.length) return
+        const nextIndex = (currentIndex + 1) % playlist.length
+        setCurrentIndex(nextIndex)
+    }
+
+    function prevSong() {
+        if (!playlist?.length) return
+        const prevIndex = (currentIndex - 1 + playlist.length) % playlist.length
+        setCurrentIndex(prevIndex)
+    }
+
+    return({
+        loading,
+        song,
+        playlist,
+        currentIndex,
+        handleGetSong,
+        nextSong,
+        prevSong,
+        selectSong,
+    })
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 import FaceExpression from "../../Expression/components/FaceExpression"
 import Player from "../components/Player"
+import PlaylistPanel from "../components/PlaylistPanel"
 import "./home.scss"
 import {useSong} from "../hooks/useSongs"
 import Navbar from '../components/Navbar'
@@ -17,6 +18,7 @@ const Home = () => {
           onClick={(expression) => { handleGetSong({ mood: expression })}}
         />
      </div>
+        <PlaylistPanel />
         <Player />
     </div>
   )

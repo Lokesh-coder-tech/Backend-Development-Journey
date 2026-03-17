@@ -41,13 +41,15 @@ async function getSong(req, res) {
 
     const { mood } = req.query
 
-    const song = await songModel.findOne({
-        mood,
-    })
+    // If mood is neutral or not provided, return a full playlist (all songs).
+    // Otherwise return all songs matching the detected mood.
+    const query = mood === "neutral" || !mood ? {} : { mood }
+    const songs = await songModel.find(query)
 
     res.status(200).json({
-        message: "song fetched successfully.",
-        song,
+        message: "songs fetched successfully.",
+        songs,
+        song: songs[0] || null,
     })
 
 }

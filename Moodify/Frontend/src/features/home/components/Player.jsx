@@ -13,7 +13,7 @@ const formatTime = (seconds) => {
 }
 
 const Player = () => {
-    const { song } = useSong()
+    const { song, playlist, currentIndex, nextSong, prevSong, selectSong } = useSong()
 
     const audioRef = useRef(null)
     const progressRef = useRef(null)
@@ -196,6 +196,14 @@ const Player = () => {
                         <path d="M23 4v6h-6"/>
                         <path d="M20.49 15a9 9 0 1 1-.49-3.6"/>
                     </svg>
+                </button>
+
+                {/* Playlist navigation */}
+                <button className="player__btn player__btn--skip" onClick={prevSong} title="Previous track">
+                    ◀️ Prev
+                </button>
+                <button className="player__btn player__btn--skip" onClick={nextSong} title="Next track">
+                    Next ▶️
                 </button>
 
                 {/* Volume */}
