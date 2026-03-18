@@ -1,187 +1,288 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import { useSelector } from "react-redux";
 import { useChat } from "../hooks/useChat";
 import {
   Search,
-  LayoutGrid,
+  Monitor,
+  Plus,
   History,
   Compass,
-  Plus,
-  Monitor,
-  TrendingUp,
+  LayoutGrid,
   MoreHorizontal,
-  UserCircle,
+  Paperclip,
+  SendHorizontal,
+  MessageSquare,
   Menu,
   X,
-  ArrowUpRight,
-  SendHorizontal,
 } from "lucide-react";
 
 const Dashboard = () => {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
   const chat = useChat();
-
-  const { user } = useSelector((state) => state.auth);
-
-  console.log(user);
+  const [chatInput, setChatInput] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile sidebar state
+  const chats = useSelector((state) => state.chat.chats);
+  const currentChatId = useSelector((state) => state.chat.currentChatId);
 
   useEffect(() => {
     chat.initializeSocketConnection();
+    chat.handleGetChats();
   }, []);
 
-  return (
-    <div className="flex h-screen w-full bg-[#080C0C] text-[#E5E5E5] font-sans overflow-hidden">
-      {/* --- MOBILE OVERLAY --- */}
-      {isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-sm"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+  const handleSubmitMessage = (event) => {
+    event.preventDefault();
+    const trimmedMessage = chatInput.trim();
+    if (!trimmedMessage) return;
+    chat.handleSendMessage({ message: trimmedMessage, chatId: currentChatId });
+    setChatInput("");
+  };
 
-      {/* --- SIDEBAR --- */}
+  const openChat = (chatId) => {
+    chat.handleOpenChat(chatId);
+    setIsSidebarOpen(false); // Mobile par chat click hote hi sidebar close ho jaye
+  };
+
+  return (
+    <main className="flex h-screen w-full bg-[#010404] text-[#e2e2e2] overflow-hidden font-sans relative">
+      {/* MOBILE HAMBURGER MENU (Visible only on mobile) */}
+      <div className="absolute top-4 left-4 z-50 md:hidden">
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="p-2 bg-[#0a0f0f] border border-white/10 rounded-lg"
+        >
+          {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+      </div>
+
+      {/* SIDEBAR (Responsive Overlay) */}
       <aside
         className={`
-        fixed lg:relative z-50 h-full w-72 bg-[#0A0F0F] border-r border-teal-900/30 flex flex-col p-5 transition-transform duration-300
-        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+        fixed inset-y-0 left-0 z-40 w-72 bg-[#010404] border-r border-white/5 p-4 transition-transform duration-300 ease-in-out
+        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+        md:relative md:translate-x-0 flex flex-col
       `}
       >
-        <div className="flex items-center justify-between py-4">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-8 bg-teal-500 rounded-lg shadow-[0_0_15px_rgba(20,184,166,0.5)] flex items-center justify-center">
-              <ArrowUpRight size={20} className="text-black" />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-white">
-              Nexora
-            </span>
+        {/* Logo */}
+        <div className="flex items-center gap-2 mb-6 px-2 mt-12 md:mt-0">
+          <div className="bg-[#00ffd5] p-1.5 rounded-lg">
+            <SendHorizontal size={18} className="text-black -rotate-45" />
           </div>
-          <button
-            className="lg:hidden text-gray-400"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <X size={24} />
+          <h1 className="text-xl font-bold tracking-tight">Nexora</h1>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="space-y-2 mb-6">
+          <div className="relative">
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+              size={16}
+            />
+            <input
+              type="text"
+              placeholder="Search history..."
+              className="w-full bg-[#0a0f0f] border border-white/10 rounded-xl py-2 pl-10 pr-4 focus:outline-none focus:border-[#00ffd5]/40 text-sm"
+            />
+          </div>
+          <button className="flex items-center justify-center gap-2 w-full bg-[#0a0f0f] border border-white/10 rounded-xl py-2.5 hover:bg-white/5 transition-all text-[#00ffd5] font-semibold text-sm">
+            <Plus size={18} /> New Thread
           </button>
         </div>
 
-        <nav className="flex-1 mt-6 space-y-1 overflow-y-auto custom-scrollbar">
-          <SidebarItem icon={<Search size={19} />} label="Search" active />
-          <SidebarItem icon={<Monitor size={19} />} label="Computer" />
-
-          <div className="py-4">
-            <button className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-teal-500/10 border border-teal-500/30 rounded-xl hover:bg-teal-500/20 transition-all group">
-              <Plus size={18} className="text-teal-400" />
-              <span className="text-sm font-semibold text-teal-500">
-                New Thread
-              </span>
-            </button>
+        {/* HISTORY SECTION */}
+        <div
+          className="flex-1 overflow-y-auto pr-1 no-scrollbar"
+          style={{
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            WebkitScrollbar: { display: "none" },
+          }}
+        >
+          <div className="flex items-center gap-2 mb-3 px-3">
+            <History size={14} className="text-gray-500" />
+            <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">
+              History
+            </p>
           </div>
 
-          <SidebarItem icon={<History size={19} />} label="History" />
-          <SidebarItem icon={<Compass size={19} />} label="Discover" />
-          <SidebarItem icon={<LayoutGrid size={19} />} label="Spaces" />
-          <SidebarItem icon={<TrendingUp size={19} />} label="Finance" />
-          <SidebarItem icon={<MoreHorizontal size={19} />} label="More" />
-        </nav>
+          <div className="space-y-1">
+            {Object.values(chats).length > 0 ? (
+              Object.values(chats)
+                .reverse()
+                .map((chatItem) => (
+                  <button
+                    key={chatItem.id}
+                    onClick={() => openChat(chatItem.id)}
+                    className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl transition-all group text-left ${
+                      currentChatId === chatItem.id
+                        ? "bg-white/10 text-white border border-white/10"
+                        : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
+                    }`}
+                  >
+                    <MessageSquare
+                      size={16}
+                      className={
+                        currentChatId === chatItem.id
+                          ? "text-[#00ffd5]"
+                          : "text-gray-600"
+                      }
+                    />
+                    <span className="text-sm font-medium truncate flex-1">
+                      {chatItem.title || "Untitled Chat"}
+                    </span>
+                  </button>
+                ))
+            ) : (
+              <p className="text-xs text-gray-600 px-3">No history found</p>
+            )}
+          </div>
+        </div>
 
-        <div className="mt-auto pt-4 border-t border-white/5">
-          <div className="flex items-center gap-3 px-3 py-3 hover:bg-white/5 rounded-xl cursor-pointer transition-all border border-transparent hover:border-white/10">
-            <div className="h-9 w-9 rounded-full bg-linear-to-tr from-teal-500 to-cyan-400 flex items-center justify-center text-black font-bold">
-              {user?.name?.charAt(0) || (
-                <UserCircle size={24} className="text-white" />
-              )}
+        {/* Bottom Nav & Profile */}
+        <div className="mt-auto pt-4 space-y-4">
+          <nav className="space-y-1">
+            <NavItem icon={<Compass size={18} />} label="Discover" />
+            <NavItem icon={<LayoutGrid size={18} />} label="Library" />
+          </nav>
+          <div className="pt-4 border-t border-white/5 flex items-center justify-between px-2">
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 rounded-full bg-[#00ffd5] flex items-center justify-center text-black font-bold text-xs">
+                NG
+              </div>
+              <div className="leading-tight">
+                <p className="text-xs font-bold">Nexora Guest</p>
+                <span className="text-[9px] text-[#00ffd5] font-black uppercase">
+                  Pro
+                </span>
+              </div>
             </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold text-white">
-                {user?.name || "Nexora Guest"}
-              </span>
-              <span className="text-[10px] text-teal-500 uppercase tracking-widest font-bold">
-                Pro Member
-              </span>
-            </div>
+            <MoreHorizontal
+              size={18}
+              className="text-gray-500 cursor-pointer"
+            />
           </div>
         </div>
       </aside>
 
-      {/* --- MAIN CONTENT --- */}
-      <main className="flex-1 flex flex-col relative overflow-hidden">
-        {/* Mobile Header */}
-        <header className="lg:hidden flex items-center justify-between p-4 border-b border-white/5 bg-[#080C0C]/80 backdrop-blur-md sticky top-0 z-30">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="text-gray-300"
-          >
-            <Menu size={24} />
+      {/* MAIN CONTENT AREA */}
+      <section className="relative flex flex-1 flex-col bg-[#010404] min-w-0" >
+        {/* Navigation Tabs (Hidden on very small screens or adjusted) */}
+        <div className="flex justify-center gap-6 md:gap-8 py-4 text-[10px] font-black tracking-[0.2em] uppercase text-gray-500" >
+          <button className="text-[#00ffd5] border-b border-[#00ffd5] pb-1">
+            Answer
           </button>
-          <span className="font-bold text-teal-500">Nexora</span>
-          <div className="w-6" /> {/* Spacer */}
-        </header>
-
-        <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 relative">
-          {/* Top Navigation Links */}
-          <div className="hidden sm:flex gap-10 absolute top-10 text-xs font-bold uppercase tracking-widest text-gray-500">
-            <span className="text-teal-400 border-b-2 border-teal-500 pb-2 cursor-pointer transition-all">
-              Answer
-            </span>
-            <span className="hover:text-white cursor-pointer transition-all">
-              Links
-            </span>
-            <span className="hover:text-white cursor-pointer transition-all">
-              Images
-            </span>
-          </div>
-
-          {/* Central UI */}
-          <div className="w-full max-w-3xl space-y-10">
-            <h1 className="text-3xl md:text-5xl font-bold tracking-tighter text-center">
-              How can I help you{" "}
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-teal-400 to-cyan-400">
-                today?
-              </span>
-            </h1>
-
-            {/* The "Glow" Search Container */}
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-linear-to-r from-teal-600 to-cyan-600 rounded-3xl blur-xl opacity-10 group-focus-within:opacity-25 transition duration-500"></div>
-
-              <div className="relative bg-[#0F1616] border border-teal-900/50 rounded-2xl shadow-2xl overflow-hidden">
-                <textarea
-                  className="w-full bg-transparent border-none focus:ring-0 text-lg p-6 resize-none placeholder-gray-600 h-20 md:h-20"
-                  placeholder="Ask Nexora anything..."
-                />
-
-                <div className="flex justify-between items-center p-2 bg-black/20 border-t border-white/5 ">
-                  <button className="flex items-center gap-2 text-gray-400 hover:text-teal-400 transition-colors text-sm font-medium">
-                    <Plus size={18} />
-                    <span>Attach</span>
-                  </button>
-
-                  <button className="flex items-center gap-2 bg-teal-500 hover:bg-teal-400 text-black px-5 py-2 rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(20,184,166,0.4)]">
-                    <span>Send</span>
-                    <SendHorizontal size={18} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <button className="hover:text-white">Sources</button>
+          <button className="hover:text-white">Media</button>
         </div>
-      </main>
-    </div>
+
+        <div className="flex-1 overflow-y-auto px-4 md:px-0"  style={{
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            WebkitScrollbar: { display: "none" },
+          }}>
+          {currentChatId && chats[currentChatId] ? (
+            <div className="mx-auto max-w-3xl space-y-8 py-10">
+              <h1 className="text-2xl md:text-3xl font-bold mb-10 px-2">
+                {chats[currentChatId].title}
+              </h1>
+              {chats[currentChatId]?.messages.map((message, idx) => (
+                <div
+                  key={idx}
+                  className={`flex flex-col ${message.role === "user" ? "items-end" : "items-start"}`}
+                >
+                  <div
+                    className={`max-w-[90%] md:max-w-[85%] rounded-2xl px-5 py-3 ${
+                      message.role === "user"
+                        ? "bg-[#121818] border border-white/5"
+                        : "border-l-2 border-white/10 pl-4 md:pl-6"
+                    }`}
+                  >
+                    <ReactMarkdown components={markdownStyles}>
+                      {message.content}
+                    </ReactMarkdown>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex h-full flex-col items-center justify-center px-4">
+              <h2 className="text-3xl md:text-5xl font-medium text-white mb-10 text-center">
+                How can I help you{" "}
+                <span className="text-[#00ffd5] italic font-serif">today?</span>
+              </h2>
+            </div>
+          )}
+        </div>
+
+        {/* INPUT BOX (Responsive width) */}
+        <div className="mx-auto w-full max-w-3xl px-4 pb-6">
+          <form
+            onSubmit={handleSubmitMessage}
+            className="bg-[#0a0f0f] border border-white/10 rounded-3xl p-2 shadow-2xl"
+          >
+            <textarea
+              rows="1"
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              placeholder="Ask anything..."
+              className="w-full bg-transparent px-4 py-3 md:py-4 text-base md:text-lg text-white outline-none resize-none"
+            />
+            <div className="flex items-center justify-between px-2 pb-2">
+              <button
+                type="button"
+                className="flex items-center gap-1.5 text-gray-500 hover:text-white text-xs font-semibold px-3"
+              >
+                <Paperclip size={14} />{" "}
+                <span className="hidden sm:inline">Attach</span>
+              </button>
+              <button
+                type="submit"
+                disabled={!chatInput.trim()}
+                className="flex items-center gap-2 rounded-full bg-[#00ffd5] px-4 md:px-6 py-2 text-[10px] md:text-xs font-black uppercase tracking-widest text-black disabled:opacity-20"
+              >
+                <span className="hidden sm:inline">Send</span>{" "}
+                <SendHorizontal size={14} />
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      {/* Overlay for mobile sidebar */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 z-30 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+    </main>
   );
 };
-const SidebarItem = ({ icon, label, active = false }) => (
-  <div
-    className={`
-    flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all group
-    ${active ? "bg-teal-500/10 text-teal-400 border border-teal-500/20" : "text-gray-500 hover:bg-white/5 hover:text-white"}
-  `}
-  >
-    <span
-      className={`${active ? "text-teal-400" : "text-gray-500 group-hover:text-teal-400"} transition-colors`}
-    >
-      {icon}
-    </span>
-    <span className="text-sm font-medium tracking-wide">{label}</span>
-  </div>
+
+const NavItem = ({ icon, label }) => (
+  <button className="flex items-center gap-3 w-full px-3 py-2 text-gray-500 hover:text-white text-sm">
+    {icon} <span className="font-medium">{label}</span>
+  </button>
 );
+
+const markdownStyles = {
+  p: ({ children }) => (
+    <p className="mb-4 last:mb-0 leading-relaxed text-sm md:text-base">
+      {children}
+    </p>
+  ),
+  ul: ({ children }) => (
+    <ul className="mb-4 list-disc pl-5 space-y-2">{children}</ul>
+  ),
+  code: ({ children }) => (
+    <code className="rounded bg-white/10 px-1 py-0.5 text-xs md:text-sm font-mono text-[#00ffd5]">
+      {children}
+    </code>
+  ),
+  pre: ({ children }) => (
+    <pre className="mb-6 overflow-x-auto rounded-xl bg-black/60 p-4 border border-white/5 text-xs md:text-sm">
+      {children}
+    </pre>
+  ),
+};
 
 export default Dashboard;
