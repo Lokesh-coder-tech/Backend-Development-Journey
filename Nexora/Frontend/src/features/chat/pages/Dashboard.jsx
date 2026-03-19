@@ -99,7 +99,7 @@ const Dashboard = () => {
         >
           <div className="flex items-center gap-2 mb-3 px-3">
             <History size={14} className="text-gray-500" />
-            <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">
+            <p className="text-[12px] uppercase tracking-widest text-gray-500 font-bold">
               History
             </p>
           </div>
