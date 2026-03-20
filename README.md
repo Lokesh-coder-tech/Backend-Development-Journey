@@ -94,9 +94,9 @@ next(); // moves to next middleware
 
 # Types of Middleware
 
-1. Application-Level Middleware
+## 1. Application-Level Middleware
 
-Applied globally using app.use()
+ Applied globally using app.use()
 
 ```
 app.use((req, res, next) => {
@@ -104,9 +104,9 @@ console.log("Runs on every request");
 next();
 }); 
 ```
-2. Route-Level Middleware
+## 2. Route-Level Middleware
 
-Applied to specific routes
+ Applied to specific routes
 ```
 app.get("/about", (req, res, next) => {
 console.log("Route middleware");
@@ -115,26 +115,26 @@ next();
 res.send("About Page");
 }); 
 ```
-3. Built-in Middleware
+## 3. Built-in Middleware
 
-Provided by Express
+ Provided by Express
 ```
 app.use(express.json());
 ```
 
 👉 Used for parsing JSON data
 
-4. Third-Party Middleware
+## 4. Third-Party Middleware
 
-External packages like:
+ External packages like:
 
-Morgan (logging)
+ Morgan (logging)
 
-CORS
+ CORS
 
-Helmet
+ Helmet
 
-5. Error-Handling Middleware
+## 5. Error-Handling Middleware
 
 Used to handle errors
 ```
@@ -152,49 +152,50 @@ res.send("Login Page");
 });
 ```
 
-👉 Output:
+Output:
 
-Request made to /login
-❌ What Happens Without Middleware?
+ Request made to /login
 
-No request logging
+# What Happens Without Middleware?
 
-No authentication
+ No request logging
 
-No validation
+ No authentication
 
-Hard to manage code
+ No validation
+
+ Hard to manage code
 
 # Best Practices
 
-Always call next() (unless sending response)
+ Always call next() (unless sending response)
 
-Keep middleware small and focused
+ Keep middleware small and focused
 
-Use separate files for large apps
+ Use separate files for large apps
 
-Order matters (top → bottom execution)
+ Order matters (top → bottom execution)
 
 # Summary
 
-Middleware = function between request & response
+ Middleware = function between request & response
 
-Used for processing requests
+ Used for processing requests
 
-Improves code structure & scalability
+ Improves code structure & scalability
 
-Essential for real-world backend apps
+ Essential for real-world backend apps
 
 # One-Line Definition
 
-Middleware is a function that runs before the final request handler to process or control the request.
+ Middleware is a function that runs before the final request handler to process or control the request.
 
 # Bonus Tip
 
-If you master middleware, you unlock:
+ If you master middleware, you unlock:
 
-Authentication systems 🔐
+ Authentication systems 🔐
 
-Clean architecture 🧠
+ Clean architecture 🧠
 
-Scalable backend apps 🚀
+ Scalable backend apps 🚀
