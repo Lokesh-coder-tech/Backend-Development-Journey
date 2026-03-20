@@ -46,7 +46,7 @@ Then you proceed further
 In Express.js, middleware is widely used.
 
 Basic Example:
-const express = require("express");
+```const express = require("express");
 const app = express();
 
 // Middleware
@@ -60,7 +60,9 @@ res.send("Hello World");
 });
 
 app.listen(3000);
-🔄 How Middleware Works
+```
+
+# How Middleware Works
 
 Request comes from client
 
@@ -83,11 +85,12 @@ Final route sends response
 It passes control to the next middleware
 
 If not called → request gets stuck ❌
-
+```
 app.use((req, res, next) => {
 console.log("Step 1");
 next(); // moves to next middleware
 });
+```
 
 # Types of Middleware
 
@@ -95,23 +98,29 @@ next(); // moves to next middleware
 
 Applied globally using app.use()
 
+```
 app.use((req, res, next) => {
 console.log("Runs on every request");
 next();
-}); 2. Route-Level Middleware
+}); 
+```
+2. Route-Level Middleware
 
 Applied to specific routes
-
+```
 app.get("/about", (req, res, next) => {
 console.log("Route middleware");
 next();
 }, (req, res) => {
 res.send("About Page");
-}); 3. Built-in Middleware
+}); 
+```
+3. Built-in Middleware
 
 Provided by Express
-
+```
 app.use(express.json());
+```
 
 👉 Used for parsing JSON data
 
@@ -128,7 +137,7 @@ Helmet
 5. Error-Handling Middleware
 
 Used to handle errors
-
+```
 app.use((err, req, res, next) => {
 res.status(500).send("Something broke!");
 });
@@ -141,6 +150,7 @@ next();
 app.get("/login", (req, res) => {
 res.send("Login Page");
 });
+```
 
 👉 Output:
 
