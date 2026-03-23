@@ -16,6 +16,11 @@ const messageSchema = new mongoose.Schema(
             enum: [ 'user', 'ai' ],
             required: true,
         },
+        // Added the images field to store an array of Base64 strings
+        images: {
+            type: [String],
+            default: [],
+        },
     },
     { timestamps: true }
 );

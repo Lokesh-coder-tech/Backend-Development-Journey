@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import remarkGfm from 'remark-gfm'
+import React, { useEffect, useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { useSelector } from "react-redux";
 import { useChat } from "../hooks/useChat";
@@ -20,7 +21,11 @@ import {
 const Dashboard = () => {
   const chat = useChat();
   const [chatInput, setChatInput] = useState("");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile sidebar state
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [selectedImages, setSelectedImages] = useState([]); // State to hold selected images
+  
+  const fileInputRef = useRef(null); // Reference for the hidden file input
+  
   const chats = useSelector((state) => state.chat.chats);
   const currentChatId = useSelector((state) => state.chat.currentChatId);
 
@@ -29,22 +34,74 @@ const Dashboard = () => {
     chat.handleGetChats();
   }, []);
 
-  const handleSubmitMessage = (event) => {
+  // Helper to convert a File to a Base64 string
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  // Handle opening the file explorer
+  const handleAttachClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  // Handle when files are selected
+  const handleFileChange = (event) => {
+    const files = Array.from(event.target.files);
+    if (files.length > 0) {
+      // Create preview URLs for the images
+      const newImages = files.map(file => ({
+        file,
+        previewUrl: URL.createObjectURL(file)
+      }));
+      setSelectedImages(prev => [...prev, ...newImages]);
+    }
+    // Reset the input so the same file can be selected again if needed
+    event.target.value = ''; 
+  };
+
+  // Remove an image from the preview list
+  const removeImage = (indexToRemove) => {
+    setSelectedImages(prev => prev.filter((_, index) => index !== indexToRemove));
+  };
+
+  const handleSubmitMessage = async (event) => {
     event.preventDefault();
     const trimmedMessage = chatInput.trim();
-    if (!trimmedMessage) return;
-    chat.handleSendMessage({ message: trimmedMessage, chatId: currentChatId });
+    
+    if (!trimmedMessage && selectedImages.length === 0) return;
+    
+    // Convert all selected raw File objects to Base64 strings
+    let base64Images = [];
+    if (selectedImages.length > 0) {
+      base64Images = await Promise.all(
+        selectedImages.map((img) => fileToBase64(img.file))
+      );
+    }
+
+    // Now send the base64 strings to your backend/socket
+    chat.handleSendMessage({ 
+      message: trimmedMessage, 
+      chatId: currentChatId,
+      images: base64Images // <--- Sending Base64 instead of File objects
+    });
+    
     setChatInput("");
+    setSelectedImages([]); // Clear images after sending
   };
 
   const openChat = (chatId) => {
     chat.handleOpenChat(chatId);
-    setIsSidebarOpen(false); // Mobile par chat click hote hi sidebar close ho jaye
+    setIsSidebarOpen(false);
   };
 
   return (
     <main className="flex h-screen w-full bg-[#010404] text-[#e2e2e2] overflow-hidden font-sans relative">
-      {/* MOBILE HAMBURGER MENU (Visible only on mobile) */}
+      {/* MOBILE HAMBURGER MENU */}
       <div className="absolute top-4 left-4 z-50 md:hidden">
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -54,7 +111,7 @@ const Dashboard = () => {
         </button>
       </div>
 
-      {/* SIDEBAR (Responsive Overlay) */}
+      {/* SIDEBAR */}
       <aside
         className={`
         fixed inset-y-0 left-0 z-40 w-72 bg-[#010404] border-r border-white/5 p-4 transition-transform duration-300 ease-in-out
@@ -165,7 +222,7 @@ const Dashboard = () => {
 
       {/* MAIN CONTENT AREA */}
       <section className="relative flex flex-1 flex-col bg-[#010404] min-w-0" >
-        {/* Navigation Tabs (Hidden on very small screens or adjusted) */}
+        {/* Navigation Tabs */}
         <div className="flex justify-center gap-6 md:gap-8 py-4 text-[10px] font-black tracking-[0.2em] uppercase text-gray-500" >
           <button className="text-[#00ffd5] border-b border-[#00ffd5] pb-1">
             Answer
@@ -196,7 +253,22 @@ const Dashboard = () => {
                         : "border-l-2 border-white/10 pl-4 md:pl-6"
                     }`}
                   >
-                    <ReactMarkdown components={markdownStyles}>
+                    
+                    {/* NEW: RENDER ATTACHED IMAGES HERE */}
+                    {message.images && message.images.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {message.images.map((imgSrc, i) => (
+                          <img
+                            key={i}
+                            src={imgSrc}
+                            alt="Attached content"
+                            className="max-h-48 rounded-lg border border-white/10 object-contain"
+                          />
+                        ))}
+                      </div>
+                    )}
+
+                    <ReactMarkdown components={markdownStyles} remarkPlugins={[remarkGfm]}>
                       {message.content}
                     </ReactMarkdown>
                   </div>
@@ -213,12 +285,34 @@ const Dashboard = () => {
           )}
         </div>
 
-        {/* INPUT BOX (Responsive width) */}
+        {/* INPUT BOX */}
         <div className="mx-auto w-full max-w-3xl px-4 pb-6">
           <form
             onSubmit={handleSubmitMessage}
-            className="bg-[#0a0f0f] border border-white/10 rounded-3xl p-2 shadow-2xl"
+            className="bg-[#0a0f0f] border border-white/10 rounded-3xl p-2 shadow-2xl flex flex-col"
           >
+            {/* Image Previews Section */}
+            {selectedImages.length > 0 && (
+              <div className="flex gap-3 px-4 pt-4 pb-2 overflow-x-auto">
+                {selectedImages.map((img, index) => (
+                  <div key={index} className="relative shrink-0">
+                    <img 
+                      src={img.previewUrl} 
+                      alt="preview" 
+                      className="h-16 w-16 object-cover rounded-xl border border-white/20"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute -top-2 -right-2 bg-[#121818] border border-white/20 rounded-full p-1 hover:bg-white/10 transition-colors"
+                    >
+                      <X size={12} className="text-white" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
             <textarea
               rows="1"
               value={chatInput}
@@ -226,18 +320,31 @@ const Dashboard = () => {
               placeholder="Ask anything..."
               className="w-full bg-transparent px-4 py-3 md:py-4 text-base md:text-lg text-white outline-none resize-none"
             />
+            
             <div className="flex items-center justify-between px-2 pb-2">
+              {/* HIDDEN FILE INPUT */}
+              <input 
+                type="file" 
+                multiple
+                accept="image/*" 
+                className="hidden" 
+                ref={fileInputRef} 
+                onChange={handleFileChange} 
+              />
+              
               <button
                 type="button"
-                className="flex items-center gap-1.5 text-gray-500 hover:text-white text-xs font-semibold px-3"
+                onClick={handleAttachClick}
+                className="flex items-center gap-1.5 text-gray-500 hover:text-white text-xs font-semibold px-3 transition-colors cursor-pointer"
               >
                 <Paperclip size={14} />{" "}
                 <span className="hidden sm:inline">Attach</span>
               </button>
+              
               <button
                 type="submit"
-                disabled={!chatInput.trim()}
-                className="flex items-center gap-2 rounded-full bg-[#00ffd5] px-4 md:px-6 py-2 text-[10px] md:text-xs font-black uppercase tracking-widest text-black disabled:opacity-20"
+                disabled={!chatInput.trim() && selectedImages.length === 0}
+                className="flex items-center gap-2 rounded-full bg-[#00ffd5] px-4 md:px-6 py-2 text-[10px] md:text-xs font-black uppercase tracking-widest text-black disabled:opacity-20 transition-opacity"
               >
                 <span className="hidden sm:inline">Send</span>{" "}
                 <SendHorizontal size={14} />

@@ -25,7 +25,7 @@ export async function sendMessage(req, res) {
     });
 
     // 2. Fetch ALL messages for this chat (including the one we just saved)
-    const messages = await messageModel.find({ chat: activeChatId });
+    const messages = await messageModel.find({ chat: activeChatId }).lean();
 
     // 3. Generate the response
     const result = await generateResponse(messages);

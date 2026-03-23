@@ -11,6 +11,7 @@ const Login = () => {
 
     const user = useSelector(state => state.auth.user)
     const loading = useSelector(state => state.auth.loading)
+    const error = useSelector(state => state.auth.error)
 
     const { handleLogin } = useAuth()
     const navigate = useNavigate()
@@ -73,6 +74,12 @@ const Login = () => {
                                 required
                             />
                         </div>
+
+                        {error && (
+                            <div className="text-red-400 text-sm text-center bg-red-900/20 border border-red-800/50 rounded-xl p-3">
+                                {error}
+                            </div>
+                        )}
 
                         <button
                             type="submit"
