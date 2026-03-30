@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "SaveHub Clipper",
+  "version": "1.0",
+  "description": "Save anything to your AI Second Brain.",
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": [
+    "http://localhost:3000/api/item/save"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}

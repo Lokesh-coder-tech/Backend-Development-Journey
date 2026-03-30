@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    :root {
+      --bg-dark: #050505;
+      --card-bg: #121212;
+      --primary-purple: #8b80ff;
+      --text-gray: #a0a0a0;
+      --accent-glow: rgba(139, 128, 255, 0.3);
+    }
+
+    body {
+      width: 320px;
+      margin: 0;
+      padding: 16px;
+      background-color: var(--bg-dark);
+      color: #ffffff;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid #222;
+      border-radius: 20px;
+      padding: 32px 20px;
+      box-sizing: border-box;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Logo Styling */
+    h3 {
+      font-size: 24px;
+      margin: 0 0 10px 0;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    h3 span {
+      color: #6366f1;
+      text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-gray);
+      margin-bottom: 30px;
+      font-weight: 400;
+    }
+
+    /* Main Action Button */
+    button {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary-purple);
+      border: none;
+      border-radius: 12px;
+      color: #000;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    button:hover {
+      background: #a399ff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(139, 128, 255, 0.5);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    /* Status Message */
+    #status {
+      margin-top: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #6366f1;
+      opacity: 0.9;
+    }
+
+    /* Footer Branding */
+    .brand {
+      position: absolute;
+      bottom: 10px;
+      font-size: 9px;
+      color: #333;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h3>SaveHub<span>.</span></h3>
+    <p class="subtitle">Secure your digital assets</p>
+    
+    <button id="saveBtn">Save Current Page</button>
+    
+    <p id="status">Saved successfully!</p>
+  </div>
+
+  <!-- <div class="brand">NEBULA OS</div> -->
+
+  <script src="popup.js"></script>
+</body>
+</html>
