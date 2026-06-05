@@ -13,6 +13,7 @@ import {
   createNewChat,
   addNewMessage,
   addMessages,
+  setMessages,
 } from "../chat.slice";
 import { useDispatch } from "react-redux";
 
@@ -78,20 +79,32 @@ export const useChat = () => {
   }
 
   async function handleOpenChat(chatId) {
-    const data = await getMessages(chatId);
-    const { messages } = data;
-    const formattedMessages = messages.map((msg) => ({
-      content: msg.content,
-      role: msg.role,
-      images: msg.images || [], // Also grab images from history if your backend sends them
-    }));
-    dispatch(
-      addMessages({
-        chatId,
-        messages: formattedMessages,
-      }),
-    );
+    // Clear messages first and set the current chat ID
     dispatch(setCurrentChatId(chatId));
+    dispatch(setLoading(true));
+    
+    try {
+      const data = await getMessages(chatId);
+      const { messages } = data;
+      const formattedMessages = messages.map((msg) => ({
+        content: msg.content,
+        role: msg.role,
+        images: msg.images || [], // Also grab images from history if your backend sends them
+      }));
+      
+      // Set messages AFTER fetching from backend
+      dispatch(
+        setMessages({
+          chatId,
+          messages: formattedMessages,
+        }),
+      );
+    } catch (error) {
+      console.error("Error loading messages:", error);
+      dispatch(setError("Failed to load chat messages"));
+    } finally {
+      dispatch(setLoading(false));
+    }
   }
 
   return {

@@ -22,7 +22,9 @@ const Dashboard = () => {
   const chat = useChat();
   const [chatInput, setChatInput] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [selectedImages, setSelectedImages] = useState([]); // State to hold selected images
+  const [selectedImages, setSelectedImages] = useState([]);
+  const user = useSelector((state) => state.auth?.user);
+   // State to hold selected images
   
   const fileInputRef = useRef(null); // Reference for the hidden file input
   
@@ -196,17 +198,17 @@ const Dashboard = () => {
 
         {/* Bottom Nav & Profile */}
         <div className="mt-auto pt-4 space-y-4">
-          <nav className="space-y-1">
+          {/* <nav className="space-y-1">
             <NavItem icon={<Compass size={18} />} label="Discover" />
             <NavItem icon={<LayoutGrid size={18} />} label="Library" />
-          </nav>
+          </nav> */}
           <div className="pt-4 border-t border-white/5 flex items-center justify-between px-2">
             <div className="flex items-center gap-3">
               <div className="h-8 w-8 rounded-full bg-[#00ffd5] flex items-center justify-center text-black font-bold text-xs">
-                NG
+                {user?.username?.charAt(0).toUpperCase() || "N"}
               </div>
               <div className="leading-tight">
-                <p className="text-xs font-bold">Nexora Guest</p>
+                <p className="text-xs font-bold"> {user?.username || "Nexora Guest"}</p>
                 <span className="text-[9px] text-[#00ffd5] font-black uppercase">
                   Pro
                 </span>
@@ -227,8 +229,8 @@ const Dashboard = () => {
           <button className="text-[#00ffd5] border-b border-[#00ffd5] pb-1">
             Answer
           </button>
-          <button className="hover:text-white">Sources</button>
-          <button className="hover:text-white">Media</button>
+          {/* <button className="hover:text-white">Sources</button>
+          <button className="hover:text-white">Media</button> */}
         </div>
 
         <div className="flex-1 overflow-y-auto px-4 md:px-0"  style={{

@@ -11,6 +11,16 @@ export const searchInternet = async ({query}) => {
  })
 
 console.log(JSON.stringify(results))
+const context = results.results
+  .map(
+    (item) => `
+Title: ${item.title}
 
-return JSON.stringify(results)
+Content: ${item.content}
+
+Source: ${item.url}
+`
+  )
+  .join("\n\n");
+ return context;
 }

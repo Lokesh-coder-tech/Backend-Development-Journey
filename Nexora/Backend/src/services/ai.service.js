@@ -1,33 +1,50 @@
 import { ChatMistralAI } from "@langchain/mistralai";
 import { HumanMessage, SystemMessage, AIMessage } from "langchain";
 import "dotenv/config";
+import { searchInternet } from "./internet.service.js";
 
 // 1. USE THE STABLE PIXTRAL VISION MODEL
 const model = new ChatMistralAI({
-  model: "pixtral-12b-2409", 
-  apikey: process.env.MISTRAL_API_KEY,
+  model: "pixtral-12b-2409",
+  apiKey: process.env.MISTRAL_API_KEY,
 });
 
 export async function generateResponse(messages) {
   console.log("Formatting messages for Pixtral...");
 
+  const latestMessage = messages[messages.length - 1]?.content || "";
+
+  const webResults = await searchInternet({
+    query: latestMessage,
+  });
+
   const formattedMessages = [
     new SystemMessage(`
-        You are a highly capable AI with vision capabilities. 
-        Always analyze and describe images when the user provides them.
-    `),
+You are a helpful AI assistant.
+
+Use the provided web search results whenever available.
+
+If web search results exist:
+- Prefer them over your own knowledge.
+- Do not invent facts.
+- Cite sources when possible.
+
+Web Search Results:
+${webResults}
+`),
     ...messages.map((msg) => {
       if (msg.role == "user") {
-        
         // 2. STRICT MULTIMODAL FORMATTING
         if (msg.images && msg.images.length > 0) {
-          const contentArray = [{ type: "text", text: msg.content || "Look at this image." }];
-          
+          const contentArray = [
+            { type: "text", text: msg.content || "Look at this image." },
+          ];
+
           msg.images.forEach((base64String) => {
             contentArray.push({
               type: "image_url",
               // LangChain REQUIRES this exact nested object format for images
-              image_url: { url: base64String } 
+              image_url: { url: base64String },
             });
           });
 
@@ -44,7 +61,7 @@ export async function generateResponse(messages) {
   try {
     // 3. CALL MODEL DIRECTLY (No Agent Wrapper to strip the images)
     const response = await model.invoke(formattedMessages);
-    return response.content; 
+    return response.content;
   } catch (error) {
     console.error("Mistral API Error:", error);
     return "I ran into an error trying to process that image. Please check the backend console.";
@@ -62,5 +79,5 @@ export async function generateChatTitle(message) {
       `),
   ]);
   // Fixed bug: LangChain uses .content, not .text for standard model invocation
-  return response.content; 
+  return response.content;
 }
