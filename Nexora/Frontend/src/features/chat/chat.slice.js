@@ -23,7 +23,11 @@ const chatSlice = createSlice({
     },
     addNewMessage: (state, action) => {
       const { chatId, content, role, images } = action.payload;
-      state.chats[chatId].messages.push({ content, role, images: images || [] });
+      state.chats[chatId].messages.push({
+        content,
+        role,
+        images: images || [],
+      });
     },
     addMessages: (state, action) => {
       const { chatId, messages } = action.payload;
@@ -45,9 +49,40 @@ const chatSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
     },
+    setCurrentChat: (state, action) => {
+      state.currentChatId = action.payload ? action.payload.id : null;
+    },
+    createChat: (state, action) => {
+      const { id, title, messages } = action.payload;
+      state.chats[id] = {
+        id,
+        title,
+        messages,
+        lastUpdated: new Date().toISOString(),
+      };
+    },
+    removeChat: (state, action) => {
+      delete state.chats[action.payload];
+
+      if (state.currentChatId === action.payload) {
+        state.currentChatId = null;
+      }
+    },
   },
 });
 
-export const {setChats, setCurrentChatId, setLoading, setError, createNewChat, addNewMessage, addMessages, setMessages} = chatSlice.actions
+export const {
+  setChats,
+  setCurrentChatId,
+  setLoading,
+  setError,
+  createNewChat,
+  addNewMessage,
+  addMessages,
+  setMessages,
+  setCurrentChat,
+  createChat,
+  removeChat
+} = chatSlice.actions;
 
-export default chatSlice.reducer
+export default chatSlice.reducer;

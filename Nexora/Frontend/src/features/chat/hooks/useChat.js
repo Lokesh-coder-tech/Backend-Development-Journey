@@ -14,6 +14,9 @@ import {
   addNewMessage,
   addMessages,
   setMessages,
+  setCurrentChat,
+  createChat,
+  removeChat
 } from "../chat.slice";
 import { useDispatch } from "react-redux";
 
@@ -107,10 +110,41 @@ export const useChat = () => {
     }
   }
 
+  const handleCreateNewChat = () => {
+  const chatId = Date.now().toString();
+
+  dispatch(
+    createChat({
+      id: chatId,
+      title: "New Chat",
+      messages: [],
+    })
+  );
+
+  dispatch(setCurrentChat(null));
+};
+
+const handleDeleteChat = async (chatId) => {
+  dispatch(setLoading(true));
+
+  try {
+    await deleteChat(chatId);
+
+    dispatch(removeChat(chatId));
+  } catch (error) {
+    console.error("Error deleting chat:", error);
+    dispatch(setError("Failed to delete chat"));
+  }
+
+  dispatch(setLoading(false));
+};
+
   return {
     initializeSocketConnection,
     handleSendMessage,
     handleGetChats,
-    handleOpenChat
+    handleOpenChat,
+    handleCreateNewChat,
+    handleDeleteChat
   };
 };
