@@ -209,7 +209,12 @@ const Dashboard = () => {
                             openMenuId === chatItem.id ? null : chatItem.id,
                           );
                         }}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                       className="
+                         opacity-100
+                         md:opacity-0
+                         md:group-hover:opacity-100
+                         transition-opacity
+                       "
                       >
                         <MoreHorizontal size={16} />
                       </button>
