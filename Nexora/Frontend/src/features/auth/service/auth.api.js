@@ -2,7 +2,7 @@ import axios from 'axios'
 
 
 const api = axios.create({
-    baseURL: "",
+    baseURL: "https://nexora-pgoi.onrender.com" ,
     withCredentials: true,
 })
 
