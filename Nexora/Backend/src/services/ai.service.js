@@ -1,5 +1,5 @@
 import { ChatMistralAI } from "@langchain/mistralai";
-import { HumanMessage, SystemMessage, AIMessage } from "langchain";
+import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages";
 import "dotenv/config";
 import { searchInternet } from "./internet.service.js";
 
@@ -29,6 +29,13 @@ If web search results exist:
 - Do not invent facts.
 - Cite sources when possible.
 
+IMPORTANT IMAGE SAFETY RULES:
+- Do NOT identify real people in images.
+- Do NOT guess names, identities, or relationships.
+- Do NOT claim that a person is a specific public figure, celebrity, athlete, politician, or private individual.
+- If asked who a person is, explain that you cannot identify people from images.
+- Instead, describe visible attributes such as clothing, appearance, actions, objects, and surroundings.
+
 Web Search Results:
 ${webResults}
 `),
@@ -40,13 +47,24 @@ ${webResults}
             { type: "text", text: msg.content || "Look at this image." },
           ];
 
+
           msg.images.forEach((base64String) => {
+            
+             console.log(
+    "IMAGE PREFIX:",
+    base64String.substring(0, 50)
+  );
             contentArray.push({
               type: "image_url",
               // LangChain REQUIRES this exact nested object format for images
               image_url: { url: base64String },
+              
             });
           });
+           console.log(
+    "PIXTRAL CONTENT:",
+    JSON.stringify(contentArray, null, 2)
+  );
 
           return new HumanMessage({ content: contentArray });
         } else {

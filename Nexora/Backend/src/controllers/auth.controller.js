@@ -31,7 +31,7 @@ export async function register(req, res) {
     const token = jwt.sign({
         id: user._id,
         username: user.username,
-    }, process.env.JWT_SECRET, { expiresIn: '7d' })
+    }, process.env.JWT_SECRET, { expiresIn: '1d' })
 
     const emailVerificationToken = jwt.sign({
         email: user.email,
@@ -108,7 +108,7 @@ export async function login(req, res) {
     const token = jwt.sign({
         id: user._id,
         username: user.username,
-    }, process.env.JWT_SECRET, { expiresIn: '7d' })
+    }, process.env.JWT_SECRET, { expiresIn: '1d' })
 
     res.cookie("token", token, {
         httpOnly: true,

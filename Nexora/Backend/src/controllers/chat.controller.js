@@ -3,7 +3,7 @@ import chatModel from "../models/chat.model.js"
 import messageModel from "../models/message.model.js";
 
 export async function sendMessage(req, res) {
-    const { message, chat: chatId } = req.body;
+    const { message, chat: chatId, images = [] } = req.body;
     let title = null, chat = null;
 
     if (!chatId) {
@@ -17,11 +17,13 @@ export async function sendMessage(req, res) {
     // Determine the active chat ID
     const activeChatId = chatId || chat._id;
 
+
     // 1. Create the user message
     await messageModel.create({
         chat: activeChatId,
         content: message,
-        role: "user"
+        role: "user",
+        images
     });
 
     // 2. Fetch ALL messages for this chat (including the one we just saved)
