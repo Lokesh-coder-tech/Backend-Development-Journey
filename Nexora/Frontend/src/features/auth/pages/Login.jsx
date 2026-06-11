@@ -100,7 +100,7 @@ const Login = () => {
                             Quick Access
                         </span>
                     </div>
-
+{/* 
                     <div className="flex gap-4">
                         <button className="flex-1 flex items-center justify-center gap-3 bg-white/3 hover:bg-white/8 border border-white/5 rounded-2xl py-4 transition-all duration-300 text-sm font-semibold text-zinc-200 group">
                             <Github size={20} className="group-hover:text-white transition-colors" />
@@ -110,7 +110,7 @@ const Login = () => {
                             <Chrome size={20} className="group-hover:text-white transition-colors" />
                             <span>Google</span>
                         </button>
-                    </div>
+                    </div> */}
 
                     <p className="text-center mt-10 text-zinc-500 text-sm">
                         New to the platform?{' '}
