@@ -42,12 +42,12 @@ const Register = () => {
         <div className="backdrop-blur-2xl bg-[#111111]/80 border border-white/5 p-10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
           <form onSubmit={submitForm} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-[1px] ml-1">Username</label>
+              <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-[1px] ml-1">Full Name</label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter username"
+                placeholder="Enter full name"
                 className="w-full bg-zinc-950/50 border border-zinc-800/50 rounded-2xl px-5 py-4 text-white outline-none focus:border-[#31b8c6] focus:ring-4 focus:ring-[#31b8c6]/10 transition-all duration-300 placeholder:text-zinc-800"
                 required
               />
