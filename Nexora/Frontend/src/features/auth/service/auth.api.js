@@ -2,7 +2,7 @@ import axios from 'axios'
 
 
 const api = axios.create({
-    baseURL: "https://nexora-pgoi.onrender.com" ,
+    baseURL: "https://nexora-pgoi.onrender.com",
     withCredentials: true,
 })
 
@@ -14,6 +14,7 @@ export async function register({ email, username, password }) {
 export async function login({ email, password }) {
     const response = await api.post("/api/auth/login", { email, password })
     return response.data
+    
 }
 
 export async function getMe() {
