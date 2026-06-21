@@ -17,7 +17,12 @@ const Register = () => {
     event.preventDefault()
     const payload = { username, email, password }
     const registeredUser = await handleRegister(payload)
-    if (registeredUser) navigate('/')
+    console.log("registeredUser:", registeredUser);
+
+    if (registeredUser) {
+    console.log("Navigating...");
+    navigate("/");
+  }
   }
 
   return (

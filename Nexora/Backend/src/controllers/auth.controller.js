@@ -11,7 +11,8 @@ import "dotenv/config"
  * @body { username, email, password }
  */
 export async function register(req, res) {
-
+  try{
+    
     const { username, email, password } = req.body;
 
     const isUserAlreadyExists = await userModel.findOne({
@@ -43,6 +44,16 @@ export async function register(req, res) {
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     })
 
+
+    res.status(201).json({
+        message: "User registered successfully",
+        success: true,
+        user: {
+            id: user._id,
+            username: user.username,
+            email: user.email
+        }
+    });
     await sendEmail({
         to: email,
         subject: "Welcome to Nexora!",
@@ -55,18 +66,17 @@ export async function register(req, res) {
                 <p>Best regards,<br>The Nexora Team</p>
         `
     })
+  }catch (error) {
+    console.error("REGISTER ERROR:", error);
 
-    res.status(201).json({
-        message: "User registered successfully",
-        success: true,
-        user: {
-            id: user._id,
-            username: user.username,
-            email: user.email
-        }
+    return res.status(500).json({
+      success: false,
+      message: error.message
     });
-
+  }
 }
+
+
 
 /**
  * @desc Login user and return JWT token

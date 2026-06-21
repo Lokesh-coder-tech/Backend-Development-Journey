@@ -16,6 +16,8 @@ export function useAuth() {
       dispatch(
         setError(error.response?.data?.message || "Registration failed"),
       );
+        console.log(error);
+  console.log(error.response?.data);
       return null;
     } finally {
       dispatch(setLoading(false));
