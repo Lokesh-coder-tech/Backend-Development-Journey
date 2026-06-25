@@ -1,69 +1,245 @@
+// Vercel Cinematic Design System Tokens
+$bg-vercel: #000000;
+$bg-card: #0a0a0a;
+$border-vercel: #222222;
+$border-hover: #444444;
+$text-main: #ffffff;
+$text-secondary: #888888;
+
+// Cybernetic Status Accents (For that subtle futuristic wow-factor)
+$scan-cyan: #00f2fe;
+$scan-matrix: rgba(0, 242, 254, 0.15);
+
 .expression-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 450px;
-    padding: 2rem;
-    background: rgba(255, 255, 255, 0.03); // Subtle glass base
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 24px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    margin: 20px auto;
-    max-width: 500px;
+    min-height: 520px;
+    padding: 3rem 2rem;
+    background: rgba(8, 8, 8, 0.7); 
+    backdrop-filter: blur(24px) saturate(200%);
+    -webkit-backdrop-filter: blur(24px) saturate(200%);
+    border: 1px solid $border-vercel;
+    border-radius: 14px;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8),
+                0 0 80px rgba(255, 255, 255, 0.01);
+    margin: 40px auto;
+    max-width: 540px;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    position: relative;
+    overflow: hidden;
+
+    // Entrance cinematic swell
+    animation: facePanelReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+    // ── Video Wrapper Context (To absolute control scanning elements) ──
+    .video-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 420px;
+        margin: 0 auto 2rem;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid $border-vercel;
+        background: #000;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        transition: border-color 0.3s ease;
+
+        &:hover {
+            border-color: rgba($scan-cyan, 0.4);
+        }
+
+        // ── NEW: Cybernetic Corner Bracket Accents ──
+        &::before, &::after {
+            content: "";
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            z-index: 3;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        // Top-Left & Bottom-Right Brackets
+        &::before {
+            top: 10px; left: 10px;
+            border-top: 2px solid $text-secondary;
+            border-left: 2px solid $text-secondary;
+        }
+        &::after {
+            bottom: 10px; right: 10px;
+            border-bottom: 2px solid $text-secondary;
+            border-right: 2px solid $text-secondary;
+        }
+
+        &:hover::before, &:hover::after {
+            border-color: $scan-cyan;
+            transform: scale(1.1);
+        }
+
+        // ── NEW: Animated Futuristic Laser Scanner Line ──
+        .scanner-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, $scan-cyan, transparent);
+            box-shadow: 0 0 15px $scan-cyan, 0 0 30px rgba($scan-cyan, 0.6);
+            z-index: 2;
+            pointer-events: none;
+            animation: cyberScan 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+    }
 
     video {
         width: 100%;
-        max-width: 400px;
-        border-radius: 16px;
-        border: 2px solid rgba(0, 217, 255, 0.3); // Neon accent border
-        box-shadow: 0 0 20px rgba(0, 217, 255, 0.1);
+        height: auto;
+        display: block;
         object-fit: cover;
-        transform: scaleX(-1); // Mirrored for natural feel
+        transform: scaleX(-1); // Mirrored posture orientation
+        opacity: 0.85;
+        transition: opacity 0.3s ease;
+
+        &:hover {
+            opacity: 1;
+        }
     }
 
     h2 {
-        font-family: 'Inter', sans-serif;
+        font-size: 1.5rem; 
         font-weight: 700;
-        font-size: 2rem;
-        text-transform: uppercase;
-        letter-spacing: 4px;
-        margin: 1.5rem 0;
-        background: linear-gradient(to right, #fff, #888);
-        background-clip: text ;
+        letter-spacing: -0.04em;
+        margin: 0 0 1.5rem 0;
+        color: $text-main;
+        text-align: center;
+        
+        // Dynamic shifting metallic font fill
+        background: linear-gradient(135deg, #ffffff 0%, #a1a1a1 50%, #ffffff 100%);
+        background-size: 200% auto;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        animation: fadeIn 0.8s ease-in-out;
+        background-clip: text;
+        animation: shineText 6s linear infinite;
+    }
+
+    // ── NEW: Detected Expression Monospace Badge ──
+    .expression-badge {
+        font-family: 'Geist Mono', 'SFMono-Regular', Monaco, monospace;
+        font-size: 0.8rem;
+        color: $scan-cyan;
+        background: $scan-matrix;
+        border: 1px solid rgba($scan-cyan, 0.3);
+        padding: 4px 12px;
+        border-radius: 4px;
+        margin-bottom: 2rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        box-shadow: 0 0 20px rgba($scan-cyan, 0.05);
+        animation: badgePulse 2s infinite alternate;
     }
 
     .detect-btn {
-        background: rgba(255, 255, 255, 0.1);
-        color: white;
-        padding: 12px 32px;
-        border-radius: 50px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        font-weight: 600;
+        position: relative;
+        background: $text-main;
+        color: $bg-vercel;
+        padding: 12px 28px;
+        border-radius: 6px;
+        border: 1px solid $text-main;
+        font-weight: 500;
+        font-size: 0.875rem;
         cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        backdrop-filter: blur(4px);
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: -0.01em;
+        overflow: hidden;
+        z-index: 1;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+        // Slick sweeping sheen effect inside the button on hover
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.4s ease;
+            z-index: -1;
+        }
 
         &:hover {
-            background: #00d9ff;
-            color: #000;
-            box-shadow: 0 0 25px rgba(0, 217, 255, 0.6);
-            transform: translateY(-2px);
+            background: transparent;
+            color: $text-main;
+            border-color: $border-hover;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+
+            &::before {
+                left: 100%;
+            }
         }
 
         &:active {
-            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.05);
         }
     }
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+/* ──────────────────────────────────────────────────────────
+   ── CINEMATIC SCI-FI MOTION ANIMATIONS
+   ────────────────────────────────────────────────────────── */
+
+@keyframes facePanelReveal {
+    from {
+        opacity: 0;
+        transform: translateY(25px) scale(0.97);
+        filter: blur(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes cyberScan {
+    0%, 100% {
+        top: 0%;
+        opacity: 0.3;
+    }
+    50% {
+        top: 100%;
+        opacity: 1;
+    }
+}
+
+@keyframes shineText {
+    to {
+        background-position: 200% center;
+    }
+}
+
+@keyframes badgePulse {
+    0% {
+        box-shadow: 0 0 10px rgba($scan-cyan, 0.05);
+        border-color: rgba($scan-cyan, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 25px rgba($scan-cyan, 0.2);
+        border-color: rgba($scan-cyan, 0.5);
+    }
+}
+
+/* ── Mobile Optimization ── */
+@media (max-width: 580px) {
+    .expression-container {
+        padding: 2rem 1.25rem;
+        margin: 1.5rem;
+        
+        h2 {
+            font-size: 1.35rem;
+        }
+
+        .video-wrapper {
+            max-width: 100%;
+        }
+    }
 }

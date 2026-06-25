@@ -9,11 +9,11 @@ app.use(cors({
     origin: "http://localhost:5173",
     credentials: true
 }))
-app.use(express.static("./public"))
+// app.use(express.static("./public"))
 
-app.use('*name', (req, res) => {
-    res.sendFile(path.join(__dirname, "..", "/public/index.html"))
-})
+// app.use('*name', (req, res) => {
+//     res.sendFile(path.join(__dirname, "..", "/public/index.html"))
+// })
 
 const authRoutes = require("./routes/auth.routes")
 const songRoutes = require("./routes/song.routes")

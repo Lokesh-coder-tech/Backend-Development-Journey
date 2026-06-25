@@ -1,436 +1,300 @@
-// Color Variables for consistency
-$primary-blue: #00f2ff;
-$secondary-blue: #006aff;
-$bg-glass: rgba(10, 15, 28, 0.8);
+// Premium Spotify Design Tokens
+$bg-spotify: #121212;
+$border-vercel: #222222;
 $text-main: #ffffff;
-$text-dim: #b0b0b0;
+$text-secondary: #888888;
+$cyber-blue: #00f2fe;
+$cyber-glass: rgba(0, 242, 254, 0.12);
+$cyber-border: rgba(0, 242, 254, 0.3);
 
 .player {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    // --- Glassmorphism Effect ---
-    background: $bg-glass;
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    
-    padding: 16px 32px;
-    display: flex;
-    align-items: center;
-    gap: 32px;
-    z-index: 100;
-    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
+    width: 100%; // Strict edge containment
+    z-index: 1000;
+    background: $bg-spotify;
+    border-top: 1px solid $border-vercel;
+    height: 90px;
+    padding: 0 32px;
+    box-sizing: border-box; // Ensures paddings don't bloat width calculations
 
-    /* ── Song Info ── */
-    &__info {
+    // 3-Column Desktop Layout
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    align-items: center;
+    gap: 24px;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+    /* ── LEFT SECTION: Meta ── */
+    &__left {
         display: flex;
         align-items: center;
-        gap: 16px;
-        min-width: 240px;
-        flex: 0 0 auto;
+        gap: 14px;
+        min-width: 0;
+        justify-self: start;
     }
 
     &__poster {
         width: 56px;
         height: 56px;
-        border-radius: 12px; // Slightly rounder
+        border-radius: 4px;
         object-fit: cover;
-        box-shadow: 0 0 15px rgba(0, 242, 255, 0.3); // Soft blue glow
-        transition: transform 0.3s ease;
-
-        &:hover {
-            transform: scale(1.05);
-        }
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        flex-shrink: 0;
     }
 
     &__meta {
         display: flex;
         flex-direction: column;
         gap: 4px;
+        min-width: 0;
     }
 
     &__title {
-        font-size: 0.95rem;
-        font-weight: 700;
+        font-size: 0.875rem;
+        font-weight: 500;
         color: $text-main;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     &__mood {
-        font-size: 0.65rem;
+        font-size: 0.6875rem;
+        color: $text-secondary;
         text-transform: uppercase;
-        color: $primary-blue;
-        background: rgba(0, 242, 255, 0.12);
-        padding: 3px 10px;
-        border-radius: 6px;
-        width: fit-content;
-        font-weight: 800;
-        letter-spacing: 0.1em;
-        border: 1px solid rgba(0, 242, 255, 0.2);
     }
 
-    /* ── Progress Section ── */
+    /* ── CENTER SECTION: Control Rails ── */
+    &__center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        max-width: 680px;
+        justify-self: center;
+    }
+
+    &__controls {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+    }
+
+    &__btn {
+        background: transparent;
+        color: $text-secondary;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        transition: color 0.15s ease, transform 0.1s ease;
+
+        &:hover {
+            color: $text-main;
+        }
+
+        &--play {
+            width: 36px;
+            height: 36px;
+            background: $text-main;
+            color: #000000;
+            border-radius: 50%;
+
+            &:hover {
+                transform: scale(1.05);
+                background: $cyber-glass;
+                color: $cyber-blue;
+                border: 1px solid $cyber-border;
+                backdrop-filter: blur(4px);
+                box-shadow: 0 0 15px rgba($cyber-blue, 0.4);
+            }
+        }
+
+        &--speed {
+            font-size: 0.8rem;
+            font-weight: 600;
+            &.active { color: $cyber-blue; }
+        }
+    }
+
     &__progress-wrap {
         display: flex;
         align-items: center;
-        gap: 14px;
-        flex: 1;
+        gap: 12px;
+        width: 100%;
     }
 
     &__time {
-        font-size: 0.75rem;
-        color: $text-dim;
-        font-family: 'Monaco', monospace; // Better for jumping numbers
+        font-size: 0.6875rem;
+        color: $text-secondary;
+        min-width: 36px;
+        text-align: center;
     }
 
     &__progress {
         position: relative;
         flex: 1;
-        height: 6px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
+        height: 4px;
+        background: #333333;
+        border-radius: 2px;
         cursor: pointer;
-        overflow: visible;
 
         &:hover {
             .player__progress-fill {
-                box-shadow: 0 0 12px $primary-blue;
+                background: $cyber-blue;
+                box-shadow: 0 0 10px $cyber-blue;
             }
-            .player__progress-thumb {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1.2);
-            }
+            .player__progress-thumb { opacity: 1; }
         }
     }
 
     &__progress-fill {
         height: 100%;
-        background: linear-gradient(90deg, $secondary-blue, $primary-blue);
-        border-radius: 10px;
-        position: relative;
+        background: #afafaf;
+        border-radius: 2px;
+        width: var(--progress-width);
     }
 
     &__progress-thumb {
         position: absolute;
         top: 50%;
-        width: 14px;
-        height: 14px;
+        left: var(--progress-width);
+        transform: translate(-50%, -50%);
+        width: 10px;
+        height: 10px;
         border-radius: 50%;
-        background: #fff;
-        box-shadow: 0 0 10px $primary-blue;
+        background: $text-main;
+        border: 2px solid $cyber-blue;
         opacity: 0;
-        transition: all 0.2s ease;
+        transition: opacity 0.15s ease;
     }
 
-    /* ── Playback Controls ── */
-    &__controls {
+    /* ── RIGHT SECTION: Utilities ── */
+    &__right {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 16px;
+        justify-self: end;
     }
 
-    &__btn {
-        background: transparent;
-        color: $text-dim;
-        border-radius: 50%;
-        transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-
-        &:hover {
-            color: $primary-blue;
-            background: rgba(0, 242, 255, 0.08);
-            transform: translateY(-2px);
-        }
-
-        &--play {
-            width: 52px;
-            height: 52px;
-            background: linear-gradient(135deg, $secondary-blue, $primary-blue);
-            color: #fff;
-            box-shadow: 0 6px 20px rgba(0, 106, 255, 0.4);
-
-            &:hover {
-                background: linear-gradient(135deg, $primary-blue, #fff);
-                color: $secondary-blue;
-                box-shadow: 0 8px 25px rgba(0, 242, 255, 0.6);
-                transform: scale(1.1);
-            }
-        }
-    }
-
-    /* ── Speed & Volume ── */
-    &__speed-option {
-        &.active {
-            background: rgba(0, 242, 255, 0.2);
-            color: $primary-blue;
-            border: 1px solid $primary-blue;
-        }
+    &__volume {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100px;
     }
 
     &__volume-slider {
+        -webkit-appearance: none;
+        appearance: none;
+        background: #333333;
+        height: 4px;
+        width: 100%;
+        border-radius: 2px;
+        outline: none;
+
         &::-webkit-slider-thumb {
-            background: $primary-blue;
-            box-shadow: 0 0 8px rgba(0, 242, 255, 0.8);
+            -webkit-appearance: none;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: $text-main;
+            cursor: pointer;
         }
     }
 }
 
-/* ── Tablet Responsiveness ── */
-@media (max-width: 1199px) {
+/* ──────────────────────────────────────────────────────────
+   ── MOBILE VIEWPORT FIT CORRECTION (Clamps to 412px layout)
+   ────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
     .player {
-        padding: 12px 20px;
-        gap: 20px;
-    }
-
-    .player__info {
-        min-width: 180px;
-    }
-
-    .player__poster {
-        width: 48px;
-        height: 48px;
-    }
-
-    .player__btn--play {
-        width: 48px;
-        height: 48px;
-    }
-}
-
-/* ── Mobile: 768px - 1199px ── */
-@media (max-width: 767px) {
-    .player {
-        padding: 10px 12px;
-        gap: 8px;
-        flex-wrap: wrap;
+        // Drop grid template to ensure items cannot force horizontal page stretch
+        display: flex;
+        justify-content: space-between;
         align-items: center;
-        min-height: 100px;
-    }
-
-    .player__info {
+        
+        height: 72px;
+        padding: 0 16px;
+        bottom: 0;
+        left: 0;
+        right: 0;
         width: 100%;
-        margin-bottom: 8px;
-        order: 1;
-    }
+        border-radius: 0; // Flush snap prevents alignment breakage inside viewport viewframes
+        border-top: 1px solid $border-vercel;
+        background: #0d0d0d; // Higher opacity ground backdrop baseline for mobile screens
 
-    .player__poster {
-        width: 44px;
-        height: 44px;
-    }
+        &__right {
+            display: none; // Offload volume sliders entirely to preserve horizontal viewport real estate
+        }
 
-    .player__progress-wrap {
-        width: 100%;
-        order: 2;
-        margin-bottom: 8px;
-        gap: 8px;
-    }
+        &__left {
+            flex: 1;
+            max-width: 65%; // Prevent long track names from pushing buttons offscreen
+            gap: 10px;
+        }
 
-    .player__time {
-        font-size: 0.65rem;
-        min-width: 30px;
-    }
-
-    .player__progress {
-        height: 5px;
-    }
-
-    .player__controls {
-        width: 100%;
-        order: 3;
-        gap: 6px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .player__btn {
-        &--play {
+        &__poster {
             width: 40px;
             height: 40px;
-            margin: 0 4px;
+        }
 
-            svg {
-                width: 20px;
-                height: 20px;
+        &__title {
+            font-size: 0.825rem;
+        }
+
+        &__center {
+            flex: 0 0 auto;
+            width: auto;
+            max-width: 35%;
+            justify-content: center;
+            align-items: flex-end;
+            position: relative;
+        }
+
+        &__controls {
+            gap: 12px; // Dense button packing footprint
+
+            // Keep only functional target play buttons active on small devices
+            .player__btn:not(.player__btn--play) {
+                &:not(.player__btn--nav) {
+                    display: none; 
+                }
             }
         }
 
-        &--skip {
-            padding: 6px 8px;
-            font-size: 0.6rem;
+        // Clean inline micro-progress slider directly on the top border layout line of the mobile bar
+        &__progress-wrap {
+            position: absolute;
+            top: -16px; 
+            left: auto;
+            right: -16px; // Snaps to horizontal frame edges seamlessly
+            width: 100vw; 
+            padding: 0;
+            pointer-events: none; // Protects page gesture inputs
 
-            svg {
-                width: 16px;
-                height: 16px;
-            }
-
-            span {
-                display: none;
-            }
-        }
-
-        &--speed {
-            font-size: 0.6rem;
-            padding: 6px 8px;
-            min-width: 32px;
-        }
-    }
-
-    .player__volume {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        order: 4;
-
-        input {
-            width: 70px;
-            height: 5px;
-        }
-    }
-}
-
-/* ── Small Mobile: 480px - 639px ── */
-@media (max-width: 639px) {
-    .player {
-        padding: 8px 8px;
-        gap: 6px;
-    }
-
-    .player__info {
-        margin-bottom: 6px;
-    }
-
-    .player__poster {
-        width: 40px;
-        height: 40px;
-    }
-
-    .player__title {
-        font-size: 0.75rem;
-    }
-
-    .player__progress-wrap {
-        margin-bottom: 6px;
-    }
-
-    .player__time {
-        font-size: 0.6rem;
-    }
-
-    .player__btn {
-        &--play {
-            width: 38px;
-            height: 38px;
-
-            svg {
-                width: 18px;
-                height: 18px;
+            .player__time {
+                display: none; // Statically strips time digits to maximize screen clean factor
             }
         }
 
-        &--skip {
-            padding: 4px 6px;
-            font-size: 0.55rem;
-        }
+        &__progress {
+            height: 2px; // Hairline visual track
+            border-radius: 0;
+            background: rgba(255, 255, 255, 0.05);
 
-        &--speed {
-            font-size: 0.55rem;
-            padding: 4px 6px;
-        }
-    }
-
-    .player__volume input {
-        width: 60px;
-    }
-}
-
-/* ── Extra Small Mobile: < 480px ── */
-@media (max-width: 479px) {
-    .player {
-        padding: 6px 6px;
-        gap: 4px;
-        min-height: 110px;
-    }
-
-    .player__info {
-        width: 100%;
-        margin-bottom: 4px;
-    }
-
-    .player__poster {
-        width: 36px;
-        height: 36px;
-    }
-
-    .player__title {
-        font-size: 0.7rem;
-    }
-
-    .player__mood {
-        font-size: 0.55rem;
-        padding: 1px 6px;
-    }
-
-    .player__progress-wrap {
-        gap: 4px;
-        margin-bottom: 4px;
-    }
-
-    .player__time {
-        font-size: 0.55rem;
-        min-width: 24px;
-    }
-
-    .player__progress {
-        height: 4px;
-    }
-
-    .player__controls {
-        gap: 3px;
-    }
-
-    .player__btn {
-        &--play {
-            width: 36px;
-            height: 36px;
-
-            svg {
-                width: 16px;
-                height: 16px;
+            .player__progress-fill {
+                background: $cyber-blue; // Direct application without forcing mouseover calculations
             }
-        }
-
-        &--skip {
-            padding: 2px 4px;
-            font-size: 0.5rem;
-
-            svg {
-                width: 12px;
-                height: 12px;
-            }
-        }
-
-        &--speed {
-            font-size: 0.5rem;
-            padding: 2px 4px;
-        }
-
-        &--vol {
-            padding: 2px;
-
-            svg {
-                width: 14px;
-                height: 14px;
-            }
-        }
-    }
-
-    .player__volume {
-        gap: 2px;
-
-        input {
-            width: 50px;
-            height: 4px;
         }
     }
 }

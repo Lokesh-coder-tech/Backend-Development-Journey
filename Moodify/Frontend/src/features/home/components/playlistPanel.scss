@@ -1,32 +1,36 @@
-$primary-blue: #00f2ff;
-$secondary-blue: #006aff;
-$bg-glass: rgba(10, 15, 28, 0.8);
+// Vercel Monochromatic Design System Tokens
+$bg-vercel: #000000;
+$border-vercel: #333333;
+$border-hover: #444444;
 $text-main: #ffffff;
-$text-dim: #b0b0b0;
-$bg-dark: #0a0f1c;
+$text-secondary: #888888;
+$text-muted: #666666;
 
 .playlist-panel {
     position: fixed;
     right: 0;
-    top: 60px;
-    bottom: 100px;
+    top: 64px; // Snug under Vercel Header
+    bottom: 64px; // Cleanly resting on top of the streamlined bottom player
     width: 320px;
-    background: $bg-glass;
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 24px 16px;
+    background: rgba($bg-vercel, 0.9);
+    backdrop-filter: saturate(180%) blur(16px);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    border-left: 1px solid $border-vercel;
+    padding: 20px 16px;
     overflow-y: auto;
-    z-index: 90;
-    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.4);
+    z-index: 900;
+    box-shadow: -8px 0 30px rgba(0, 0, 0, 0.3);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    box-sizing: border-box;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
-    /* Smooth scroll */
+    /* Custom Minimalist Scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: $primary-blue transparent;
+    scrollbar-color: $border-hover transparent;
 
     &::-webkit-scrollbar {
-        width: 6px;
+        width: 4px;
+        height: 4px; // Horizontal scrollbar support on mobile views
     }
 
     &::-webkit-scrollbar-track {
@@ -34,11 +38,11 @@ $bg-dark: #0a0f1c;
     }
 
     &::-webkit-scrollbar-thumb {
-        background: rgba(0, 242, 255, 0.3);
-        border-radius: 3px;
+        background: $border-vercel;
+        border-radius: 0px;
 
         &:hover {
-            background: rgba(0, 242, 255, 0.5);
+            background: $border-hover;
         }
     }
 
@@ -47,33 +51,34 @@ $bg-dark: #0a0f1c;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 20px;
+        margin-bottom: 16px;
         padding-bottom: 12px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: 1px solid $border-vercel;
     }
 
     &__title {
-        font-size: 1.1rem;
-        font-weight: 700;
+        font-size: 0.95rem;
+        font-weight: 600;
         color: $text-main;
         margin: 0;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        letter-spacing: -0.02em;
     }
 
     &__count {
         font-size: 0.75rem;
-        color: $text-dim;
-        background: rgba(0, 242, 255, 0.08);
-        padding: 4px 10px;
-        border-radius: 999px;
-        border: 1px solid rgba(0, 242, 255, 0.2);
+        font-family: 'Geist Mono', 'SFMono-Regular', Monaco, monospace;
+        color: $text-secondary;
+        background: #111111;
+        padding: 2px 8px;
+        border-radius: 4px;
+        border: 1px solid $border-vercel;
     }
 
     /* ── Empty state ── */
     &__empty {
-        color: $text-dim;
+        color: $text-muted;
         text-align: center;
-        font-size: 0.9rem;
+        font-size: 0.875rem;
         padding: 40px 20px;
         margin: 0;
     }
@@ -82,7 +87,7 @@ $bg-dark: #0a0f1c;
     &__list {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 8px;
     }
 
     /* ── Individual track item ── */
@@ -90,36 +95,34 @@ $bg-dark: #0a0f1c;
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 12px;
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        background: rgba(255, 255, 255, 0.02);
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid transparent;
+        background: transparent;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: background-color 0.15s ease, border-color 0.15s ease;
         text-align: left;
         position: relative;
 
         &:hover {
-            border-color: rgba(0, 242, 255, 0.3);
-            background: rgba(0, 242, 255, 0.08);
-            transform: translateX(-4px);
+            border-color: $border-vercel;
+            background: rgba(255, 255, 255, 0.04);
         }
 
         &.active {
-            border-color: $primary-blue;
-            background: rgba(0, 242, 255, 0.15);
-            box-shadow: 0 0 12px rgba(0, 242, 255, 0.2);
+            border-color: $border-hover;
+            background: rgba(255, 255, 255, 0.07);
         }
     }
 
     /* ── Thumbnail ── */
     &__thumbnail {
-        width: 56px;
-        height: 56px;
-        border-radius: 6px;
+        width: 44px;
+        height: 44px;
+        border-radius: 4px;
+        border: 1px solid $border-vercel;
         object-fit: cover;
         flex-shrink: 0;
-        box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
     }
 
     /* ── Song details ── */
@@ -132,8 +135,8 @@ $bg-dark: #0a0f1c;
     }
 
     &__item-title {
-        font-size: 0.85rem;
-        font-weight: 700;
+        font-size: 0.875rem;
+        font-weight: 500;
         color: $text-main;
         margin: 0;
         white-space: nowrap;
@@ -142,150 +145,104 @@ $bg-dark: #0a0f1c;
     }
 
     &__item-mood {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
+        font-family: 'Geist Mono', 'SFMono-Regular', Monaco, monospace;
         text-transform: uppercase;
-        color: $primary-blue;
-        background: rgba(0, 242, 255, 0.12);
-        padding: 2px 8px;
-        border-radius: 4px;
+        color: $text-secondary;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 1px 6px;
+        border-radius: 3px;
         width: fit-content;
-        font-weight: 700;
-        border: 1px solid rgba(0, 242, 255, 0.2);
-        letter-spacing: 0.05em;
+        font-weight: 400;
+        border: 1px solid $border-vercel;
     }
 
     /* ── Play indicator ── */
     &__play-indicator {
-        font-size: 1rem;
-        animation: pulse 1s infinite;
+        color: $text-main;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
     }
 }
 
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.5;
-    }
-}
-
-/* ── Mobile responsiveness ── */
-@media (max-width: 1024px) {
-    .playlist-panel {
-        width: 280px;
-        padding: 16px 12px;
-    }
-
-    .playlist-panel__title {
-        font-size: 1rem;
-    }
-
-    .playlist-panel__thumbnail {
-        width: 48px;
-        height: 48px;
-    }
-}
+/* ──────────────────────────────────────────────────────────
+   ── MOBILE RESPONSIVE MEDIA OVERRIDES 
+   ────────────────────────────────────────────────────────── */
 
 @media (max-width: 768px) {
     .playlist-panel {
         width: 100%;
-        position: fixed;
+        left: 0;
         right: 0;
         top: auto;
-        bottom: 100px;
+        bottom: 68px; // Positions panel precisely floating right on top of the bottom media player element
+        height: 180px; // Optimized screen property space distribution constraints
+        max-height: 25vh; 
         border-left: none;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        max-height: 280px;
-        padding: 12px 16px;
-        left: 0;
-    }
+        border-top: 1px solid $border-vercel;
+        background: rgba($bg-vercel, 0.95); // Darker base mix value layout layer adjustments
+        padding: 14px 16px;
+        overflow-y: hidden; // Prevents global axis scrolling bugs
+        overflow-x: auto; // Enables side horizontal swiping environments for mobile controls
 
-    .playlist-panel__header {
-        margin-bottom: 16px;
-    }
+        &__header {
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            // Locks headers cleanly inside sticky screen spaces if list content shifts
+            position: sticky;
+            left: 0;
+        }
 
-    .playlist-panel__count {
-        display: none;
-    }
+        &__count {
+            font-size: 0.7rem;
+            padding: 1px 6px;
+        }
 
-    .playlist-panel__list {
-        gap: 10px;
-        flex-direction: row;
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        padding-bottom: 8px;
-    }
+        &__list {
+            flex-direction: row; // Flips layout matrix into side-by-side horizontal cards
+            gap: 12px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; // Crisp native responsive acceleration logic mapping
+            padding-bottom: 4px;
+            width: max-content; // Ensures inner flexible blocks do not squeeze together
+        }
 
-    .playlist-panel__item {
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        min-width: 100px;
-        padding: 8px;
-    }
+        &__item {
+            flex-direction: row;
+            align-items: center;
+            width: 240px; // Standard cross-platform grid blueprint dimension width allocation boundaries
+            flex-shrink: 0; // Blocks system auto flattening constraints
+            background: #0a0a0a;
+            border: 1px solid $border-vercel;
+            padding: 8px;
 
-    .playlist-panel__thumbnail {
-        width: 64px;
-        height: 64px;
-        margin-bottom: 8px;
-    }
+            &.active {
+                border-color: $border-hover;
+                background: rgba(255, 255, 255, 0.04);
+            }
+        }
 
-    .playlist-panel__details {
-        gap: 2px;
-        width: 100%;
-    }
+        &__thumbnail {
+            width: 36px;
+            height: 36px;
+        }
 
-    .playlist-panel__item-title {
-        font-size: 0.75rem;
-        max-width: 100%;
-    }
-
-    .playlist-panel__item-mood {
-        font-size: 0.65rem;
-        padding: 1px 6px;
-    }
-
-    .playlist-panel__play-indicator {
-        position: absolute;
-        top: 4px;
-        right: 4px;
-        font-size: 0.9rem;
-    }
-
-    .playlist-panel::-webkit-scrollbar {
-        height: 4px;
+        &__item-title {
+            font-size: 0.8rem;
+        }
     }
 }
 
 @media (max-width: 480px) {
     .playlist-panel {
-        bottom: 90px;
-        max-height: 200px;
-        padding: 8px 12px;
-    }
+        height: 160px;
+        padding: 12px;
+        bottom: 64px; // Keeps consistent mapping with tiny variations of player dimensions
 
-    .playlist-panel__title {
-        font-size: 0.95rem;
-    }
-
-    .playlist-panel__item {
-        min-width: 80px;
-        padding: 6px;
-    }
-
-    .playlist-panel__thumbnail {
-        width: 56px;
-        height: 56px;
-    }
-
-    .playlist-panel__item-title {
-        font-size: 0.7rem;
-    }
-
-    .playlist-panel__item-mood {
-        font-size: 0.6rem;
-        padding: 1px 4px;
+        &__item {
+            width: 200px; // Slimmed down cards slightly for ultra tight screen properties
+            gap: 10px;
+        }
     }
 }
