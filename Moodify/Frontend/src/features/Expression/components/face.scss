@@ -16,7 +16,7 @@ $scan-matrix: rgba(0, 242, 254, 0.15);
     align-items: center;
     justify-content: flex-start;
     min-height: auto;
-    padding: 1rem; // Padding kam kiya space bachane ke liye
+    padding: 0.75rem; 
     background: rgba(8, 8, 8, 0.7); 
     backdrop-filter: blur(24px) saturate(200%);
     -webkit-backdrop-filter: blur(24px) saturate(200%);
@@ -24,10 +24,10 @@ $scan-matrix: rgba(0, 242, 254, 0.15);
     border-radius: 12px;
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
     
-    // ── CHANGES: Container ko upar push karne ke liye margins tight kiye ──
-    margin: -10px auto 10px auto; // Negative margin-top se box upar shift ho jayega
+    // Default safe layout positions
+    margin: 10px auto; 
     width: 100%;
-    max-width: 440px; 
+    max-width: 420px; 
     box-sizing: border-box;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     position: relative;
@@ -35,18 +35,18 @@ $scan-matrix: rgba(0, 242, 254, 0.15);
 
     animation: facePanelReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 
-    // ── Video Wrapper Context ──
+    // ── VIDEO WRAPPER (Strictly bounding the camera element) ──
     .video-wrapper {
         position: relative;
         width: 100%;
-        max-width: 220px; // Sizing ko thoda aur chota kiya taaki button upar aa sake
-        margin: 0 auto 0.5rem; // Bottom margin kam kiya
+        max-width: 200px; // Handsets pe box width control locked rakhega
+        height: 150px;    // HARD FIX: Physical height strictly enforce ki taaki camera push na kare
+        margin: 0 auto 0.5rem; 
         border-radius: 6px;
         overflow: hidden;
         border: 1px solid $border-vercel;
         background: #000;
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-        aspect-ratio: 4 / 3; 
         transition: border-color 0.3s ease;
 
         &:hover {
@@ -87,19 +87,19 @@ $scan-matrix: rgba(0, 242, 254, 0.15);
     }
 
     video {
-        width: 100%;
-        height: 100%;
+        width: 100% !important;
+        height: 100% !important; // Strict layout validation override
         display: block;
-        object-fit: cover;
+        object-fit: cover !important; // HARD FIX: Camera pixels wrap ho jayenge, fill nahi karenge screen ko
         transform: scaleX(-1);
         opacity: 0.85;
     }
 
     h2 {
-        font-size: 1.15rem; // Font thoda sleek kiya
+        font-size: 1.05rem; 
         font-weight: 700;
         letter-spacing: -0.03em;
-        margin: 0 0 0.4rem 0; // Margin tight kiya
+        margin: 0 0 0.25rem 0;
         color: $text-main;
         text-align: center;
         
@@ -111,16 +111,15 @@ $scan-matrix: rgba(0, 242, 254, 0.15);
         animation: shineText 6s linear infinite;
     }
 
-    // Detected Expression Monospace Badge
     .expression-badge {
         font-family: 'Geist Mono', 'SFMono-Regular', Monaco, monospace;
-        font-size: 0.7rem;
+        font-size: 0.65rem;
         color: $scan-cyan;
         background: $scan-matrix;
         border: 1px solid rgba($scan-cyan, 0.25);
         padding: 2px 6px;
         border-radius: 4px;
-        margin-bottom: 0.5rem; // Spacing bohot kam kar di taaki button push na ho down
+        margin-bottom: 0.4rem; 
         letter-spacing: 0.04em;
         text-transform: uppercase;
         animation: badgePulse 2s infinite alternate;
@@ -130,17 +129,17 @@ $scan-matrix: rgba(0, 242, 254, 0.15);
         position: relative;
         background: $text-main;
         color: $bg-vercel;
-        padding: 8px 18px; 
+        padding: 6px 16px; 
         border-radius: 6px;
         border: 1px solid $text-main;
         font-weight: 500;
-        font-size: 0.8rem;
+        font-size: 0.775rem;
         cursor: pointer;
         letter-spacing: -0.01em;
         overflow: hidden;
         z-index: 1;
         transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        flex-shrink: 0; // Strict protection: height zero nahi hogi browser me
+        flex-shrink: 0; // Strict layout rule
 
         &::before {
             content: '';
@@ -171,7 +170,7 @@ $scan-matrix: rgba(0, 242, 254, 0.15);
 
 /* ── KEYFRAME ANIMATIONS ── */
 @keyframes facePanelReveal {
-    from { opacity: 0; transform: translateY(5px) scale(0.99); }
+    from { opacity: 0; transform: translateY(4px) scale(0.99); }
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
 @keyframes cyberScan {
@@ -184,20 +183,21 @@ $scan-matrix: rgba(0, 242, 254, 0.15);
     100% { border-color: rgba($scan-cyan, 0.45); }
 }
 
-/* ── SHORT SCREEN HEIGHT FIX FOR MOBILE ── */
-@media (max-width: 480px) {
+/* ── REALME P1 MOBILE VIEWPORT SPECIFIC OVERRIDES ── */
+@media (max-width: 768px) {
     .expression-container {
-        padding: 0.75rem;
-        margin: -40px auto 4px auto; // Mobile pe container ko thoda aur upar lift kiya
+        margin: -40px auto 4px auto !important; // Absolute top shift forced on phone load
+        padding: 0.5rem;
 
         .video-wrapper {
-            max-width: 180px; // 412x599 jaise micro screens ke liye safe size
-            margin-bottom: 0.4rem;
+            max-width: 150px !important; // Frame constraints strictly re-clamped
+            height: 112px !important;    // Aspect ratio safety container height lock
+            margin-bottom: 0.25rem;
         }
 
         h2 {
-            font-size: 1.05rem;
-            margin-bottom: 0.2rem;
+            font-size: 0.95rem;
+            margin-bottom: 0.15rem;
         }
     }
 }
