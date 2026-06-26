@@ -1,6 +1,6 @@
 // Premium Spotify Design Tokens
 $bg-spotify: #121212;
-$border-vercel: #222222;
+$border-vercel: #161f30;
 $text-main: #ffffff;
 $text-secondary: #888888;
 $cyber-blue: #00f2fe;
@@ -18,7 +18,7 @@ $cyber-border: rgba(0, 242, 254, 0.3);
     border-top: 1px solid $border-vercel;
     height: 90px;
     padding: 0 32px;
-    box-sizing: border-box; // Ensures paddings don't bloat width calculations
+    box-sizing: border-box; 
 
     // 3-Column Desktop Layout
     display: grid;
@@ -28,7 +28,7 @@ $cyber-border: rgba(0, 242, 254, 0.3);
     box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-    /* ── LEFT SECTION: Meta ── */
+    /* ── LEFT SECTION ── */
     &__left {
         display: flex;
         align-items: center;
@@ -69,7 +69,7 @@ $cyber-border: rgba(0, 242, 254, 0.3);
         text-transform: uppercase;
     }
 
-    /* ── CENTER SECTION: Control Rails ── */
+    /* ── CENTER SECTION ── */
     &__center {
         display: flex;
         flex-direction: column;
@@ -177,7 +177,7 @@ $cyber-border: rgba(0, 242, 254, 0.3);
         transition: opacity 0.15s ease;
     }
 
-    /* ── RIGHT SECTION: Utilities ── */
+    /* ── RIGHT SECTION ── */
     &__right {
         display: flex;
         align-items: center;
@@ -213,58 +213,57 @@ $cyber-border: rgba(0, 242, 254, 0.3);
 }
 
 /* ──────────────────────────────────────────────────────────
-   ── MOBILE VIEWPORT FIT CORRECTION (Clamps to 412px layout)
+   ── MOBILE VIEWPORT FIT LOCK (PERFECT SYMMETRY CORRECTION) ──
    ────────────────────────────────────────────────────────── */
 
 @media (max-width: 768px) {
     .player {
-        // Drop grid template to ensure items cannot force horizontal page stretch
         display: flex;
         justify-content: space-between;
         align-items: center;
-        
         height: 72px;
         padding: 0 16px;
         bottom: 0;
         left: 0;
         right: 0;
         width: 100%;
-        border-radius: 0; // Flush snap prevents alignment breakage inside viewport viewframes
+        border-radius: 0;
         border-top: 1px solid $border-vercel;
-        background: #0d0d0d; // Higher opacity ground backdrop baseline for mobile screens
+        background: #0d0d0d;
+        z-index: 99999 !important;
 
         &__right {
-            display: none; // Offload volume sliders entirely to preserve horizontal viewport real estate
+            display: none; // Hide volume controls on mobile viewports
         }
 
         &__left {
             flex: 1;
-            max-width: 65%; // Prevent long track names from pushing buttons offscreen
+            max-width: 55%; // Left room for button controls to prevent squeezing
             gap: 10px;
         }
 
         &__poster {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
         }
 
         &__title {
-            font-size: 0.825rem;
+            font-size: 0.8rem;
         }
 
         &__center {
             flex: 0 0 auto;
             width: auto;
-            max-width: 35%;
+            max-width: 45%;
+            display: flex;
             justify-content: center;
-            align-items: flex-end;
-            position: relative;
+            align-items: center;
+            position: static; // Changed to static to let the progress bar absolute align perfectly to the parent container
         }
 
         &__controls {
-            gap: 12px; // Dense button packing footprint
+            gap: 14px;
 
-            // Keep only functional target play buttons active on small devices
             .player__btn:not(.player__btn--play) {
                 &:not(.player__btn--nav) {
                     display: none; 
@@ -272,28 +271,41 @@ $cyber-border: rgba(0, 242, 254, 0.3);
             }
         }
 
-        // Clean inline micro-progress slider directly on the top border layout line of the mobile bar
+        // ── PERMANENT ALIGNMENT FIX: Dynamic Horizontal Edge Binding ──
         &__progress-wrap {
             position: absolute;
-            top: -16px; 
-            left: auto;
-            right: -16px; // Snaps to horizontal frame edges seamlessly
-            width: 100vw; 
+            top: 0; // Aligns perfectly flush right along the player's top border line
+            left: 0; // Direct snap to absolute screen boundaries
+            right: 0;
+            width: 100%; // Automatically maps context width bounds without break calculations
             padding: 0;
-            pointer-events: none; // Protects page gesture inputs
+            margin: 0;
+            pointer-events: auto !important;
+            touch-action: none !important;
 
             .player__time {
-                display: none; // Statically strips time digits to maximize screen clean factor
+                display: none; // Statically strips text digits to maximize visual space
             }
         }
 
         &__progress {
-            height: 2px; // Hairline visual track
+            height: 3px !important; // Clean, uniform hairline tracking bar
             border-radius: 0;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.12);
+            width: 100%;
 
             .player__progress-fill {
-                background: $cyber-blue; // Direct application without forcing mouseover calculations
+                background: $cyber-blue !important;
+                box-shadow: 0 0 8px $cyber-blue;
+            }
+
+            .player__progress-thumb {
+                opacity: 1 !important; // Keeps the thumb glowing and visible for mobile finger alignment tracking
+                width: 10px !important;
+                height: 10px !important;
+                background: #ffffff !important;
+                border: 2px solid $cyber-blue !important;
+                box-shadow: 0 0 6px $cyber-blue;
             }
         }
     }

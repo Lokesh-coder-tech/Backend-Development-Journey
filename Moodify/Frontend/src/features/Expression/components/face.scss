@@ -29,19 +29,20 @@ $scan-matrix: rgba(0, 242, 254, 0.15);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     position: relative;
     
-    // ── DESKTOP/LAPTOP VERTICAL SCROLL SAFETY ──
+    // ── INTERACTION SAFETY FIX ──
     max-height: 80vh; 
-    overflow-y: auto;   // Up-and-down movement vertical scrolling active
-    overflow-x: hidden; // Side-to-side rotation horizontal disabled
+    overflow-y: auto;   
+    overflow-x: hidden; 
+    pointer-events: auto; // Ensures click inside this box works normally
+    z-index: 5; // Layer ko neutral depth di taaki neeche ke player blocks block na hon
+    
     scrollbar-width: thin; 
     scrollbar-color: rgba($scan-cyan, 0.3) transparent;
 
     animation: facePanelReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 
-    // Custom Webkit Scrollbar for Premium UI
     &::-webkit-scrollbar {
         width: 4px;
-        height: 0px; // Horizontal scroll bar track entirely destroyed
     }
     &::-webkit-scrollbar-thumb {
         background: rgba($scan-cyan, 0.3);
@@ -157,7 +158,7 @@ $scan-matrix: rgba(0, 242, 254, 0.15);
 }
 
 /* ──────────────────────────────────────────────────────────
-   ── MOBILE PURE VERTICAL SCROLL LOCK INJECTIONS ──
+   ── MOBILE PURE VERTICAL SCROLL & TOUCH FIX FOR REALME ──
    ────────────────────────────────────────────────────────── */
 
 @media (max-width: 768px) {
@@ -167,11 +168,15 @@ $scan-matrix: rgba(0, 242, 254, 0.15);
         border: 1px solid $border-vercel !important;
         margin: 8px auto !important;
         
-        // ── HARD FIX: Horizontal block kiya aur strictly vertical allowed kiya ──
-        max-height: 290px !important; // Cards layout ko short bounding height di taaki playlist ko push na kare
-        overflow-y: scroll !important; // Pure Up-and-Down Scrolling force kiya
-        overflow-x: hidden !important; // Horizontal slide strictly locked close
+        // Sizing & Vertical bounds constraint
+        max-height: 290px !important; 
+        overflow-y: scroll !important; 
+        overflow-x: hidden !important; 
         
+        // ── HARD INTERACTION LOCKS ──
+        z-index: 10 !important; // Keeps layout neatly structured without masking player controls below
+        touch-action: pan-y !important; // Standardizes native smartphone scrolling mechanism
+
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
@@ -189,7 +194,7 @@ $scan-matrix: rgba(0, 242, 254, 0.15);
         .video-wrapper {
             max-width: 240px !important; 
             width: 240px !important;
-            height: 180px !important; // Camera streams clear aur pixel-perfect dikhenge
+            height: 180px !important; 
             aspect-ratio: auto !important;
             margin: 0 auto 16px auto !important;
         }
@@ -197,9 +202,9 @@ $scan-matrix: rgba(0, 242, 254, 0.15);
         .detect-btn {
             display: flex !important;
             width: 240px !important; 
-            padding: 12px 0 !important;
+            padding: 12px 60px !important;
             font-size: 0.85rem !important;
-            margin: 8px auto 8px auto !important; // Space buffers bottom bounds me allocate kiya
+            margin: 8px auto 8px auto !important; 
         }
     }
 }

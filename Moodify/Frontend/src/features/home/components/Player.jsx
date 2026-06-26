@@ -58,12 +58,26 @@ const Player = () => {
         setDuration(audioRef.current.duration);
     };
 
-    const handleProgressClick = (e) => {
+    // ── HARD FIX: Mobile Phone Tapping & Dragging Support ──
+    const handleProgressScrub = (e) => {
         const bar = progressRef.current;
+        if (!bar || !duration) return;
+
+        // Browser gestures logic block kill karega taaki navigation miss na ho
+        if (e.cancelable) e.preventDefault();
+
         const rect = bar.getBoundingClientRect();
-        const ratio = (e.clientX - rect.left) / rect.width;
-        const newTime = ratio * duration;
-        audioRef.current.currentTime = newTime;
+        
+        // Check touch lists array for mobile phone inputs, fallback to mouse clientX
+        const clientX = e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
+        
+        const ratio = (clientX - rect.left) / rect.width;
+        const clampedRatio = Math.min(Math.max(ratio, 0), 1); // Boundary clamp rules
+        
+        const newTime = clampedRatio * duration;
+        if (audioRef.current) {
+            audioRef.current.currentTime = newTime;
+        }
         setCurrentTime(newTime);
     };
 
@@ -111,7 +125,7 @@ const Player = () => {
                 onEnded={handleSongEnd}
             />
 
-            {/* Left Column: Cover + Meta */}
+            {/* Left Column */}
             <div className="player__left">
                 <img className="player__poster" src={song.posterUrl} alt={song.title} />
                 <div className="player__meta">
@@ -120,22 +134,22 @@ const Player = () => {
                 </div>
             </div>
 
-            {/* Center Column: Timelines and Controls Container */}
+            {/* Center Column */}
             <div className="player__center">
                 <div className="player__controls">
-                    <button className="player__btn player__btn--nav" onClick={prevSong} title="Previous track">
+                    <button className="player__btn player__btn--nav" onClick={prevSong}>
                         <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
                             <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
                         </svg>
                     </button>
 
-                    <button className="player__btn player__btn--skip" onClick={() => skip(-5)} title="Back 5s">
+                    <button className="player__btn player__btn--skip" onClick={() => skip(-5)}>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
                             <path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-3.6"/>
                         </svg>
                     </button>
 
-                    <button className="player__btn player__btn--play" onClick={togglePlay} title={isPlaying ? 'Pause' : 'Play'}>
+                    <button className="player__btn player__btn--play" onClick={togglePlay}>
                         {isPlaying ? (
                             <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
                                 <rect x="5" y="5" width="4" height="14" rx="1"/><rect x="15" y="5" width="4" height="14" rx="1"/>
@@ -147,23 +161,29 @@ const Player = () => {
                         )}
                     </button>
 
-                    <button className="player__btn player__btn--skip" onClick={() => skip(5)} title="Forward 5s">
+                    <button className="player__btn player__btn--skip" onClick={() => skip(5)}>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
                             <path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-.49-3.6"/>
                         </svg>
                     </button>
 
-                    <button className="player__btn player__btn--nav" onClick={nextSong} title="Next track">
+                    <button className="player__btn player__btn--nav" onClick={nextSong}>
                         <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
                             <path d="M6 18l8.5-6L6 6zm9-12h2v12h2z"/>
                         </svg>
                     </button>
                 </div>
 
-                {/* Progress Element - Injecting CSS Variable safely */}
+                {/* ── PROGRESS SLIDER (Touch Listeners Embedded Permanently) ── */}
                 <div className="player__progress-wrap" style={{ '--progress-width': `${progress}%` }}>
                     <span className="player__time">{formatTime(currentTime)}</span>
-                    <div className="player__progress" ref={progressRef} onClick={handleProgressClick}>
+                    <div 
+                        className="player__progress" 
+                        ref={progressRef} 
+                        onClick={handleProgressScrub}
+                        onTouchStart={handleProgressScrub}
+                        onTouchMove={handleProgressScrub} // Mobile phone dragging support enabled!
+                    >
                         <div className="player__progress-fill" />
                         <div className="player__progress-thumb" />
                     </div>
@@ -171,7 +191,7 @@ const Player = () => {
                 </div>
             </div>
 
-            {/* Right Column: Audio System Utilities */}
+            {/* Right Column */}
             <div className="player__right">
                 <div className="player__speed-wrap">
                     <button className={`player__btn player__btn--speed ${speed !== 1 ? 'active' : ''}`} onClick={() => setShowSpeed(!showSpeed)}>
