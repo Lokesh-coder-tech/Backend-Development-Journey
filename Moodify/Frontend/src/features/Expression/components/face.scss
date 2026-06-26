@@ -23,24 +23,22 @@ $scan-matrix: rgba(0, 242, 254, 0.15);
     border: 1px solid $border-vercel;
     border-radius: 12px;
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
-    
-    // Default desktop positioning
     margin: 10px auto; 
     width: 100%;
     max-width: 420px; 
     box-sizing: border-box;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     position: relative;
-    overflow: visible; // Element clipping band kar di taaki button dikhe
+    overflow: visible; // Taaki elements background clip se bahar na dabein
 
     animation: facePanelReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 
-    // ── VIDEO WRAPPER (Strict Bounds) ──
+    // ── VIDEO WRAPPER ──
     .video-wrapper {
         position: relative;
         width: 100%;
         max-width: 220px; 
-        height: 160px; // Video box footprint ko bound rakha hai
+        height: 150px; 
         margin: 0 auto 0.5rem; 
         border-radius: 6px;
         overflow: hidden;
@@ -90,7 +88,7 @@ $scan-matrix: rgba(0, 242, 254, 0.15);
         width: 100% !important;
         height: 100% !important;
         display: block;
-        object-fit: cover !important;
+        object-fit: cover !important; // Forces pixels inside the box framework layout
         transform: scaleX(-1);
         opacity: 0.85;
     }
@@ -125,7 +123,6 @@ $scan-matrix: rgba(0, 242, 254, 0.15);
         animation: badgePulse 2s infinite alternate;
     }
 
-    // ── MASTER DETECT BUTTON (Layout Fixed) ──
     .detect-btn {
         position: relative;
         background: $text-main;
@@ -138,7 +135,7 @@ $scan-matrix: rgba(0, 242, 254, 0.15);
         cursor: pointer;
         letter-spacing: -0.01em;
         overflow: hidden;
-        z-index: 20; // High stacking order taaki overlap na ho
+        z-index: 20; 
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -180,36 +177,47 @@ $scan-matrix: rgba(0, 242, 254, 0.15);
     100% { border-color: rgba($scan-cyan, 0.45); }
 }
 
-/* ── REAL SMARTPHONE VIEWPORT OVERRIDES ── */
+/* ──────────────────────────────────────────────────────────
+   ── MOBILE VIEWPORT FIT LOCK OVERRIDES (Real Device Safe)
+   ────────────────────────────────────────────────────────── */
+
 @media (max-width: 768px) {
     .expression-container {
-        // Container ko direct baseline screen workflow me laya
-        margin: 0px auto 16px auto !important; 
-        padding: 0.75rem;
-        background: transparent; // Heavy dark borders hata diye mobile par cleaner look ke liye
-        border: none;
-        box-shadow: none;
+        margin: -50px auto 4px auto !important; // Container ko bohot upar shift kiya
+        padding: 0.4rem;
+        background: transparent !important; // Backplates blocks hata diye vertical real estate bachane ke liye
+        border: none !important;
+        box-shadow: none !important;
+        max-width: 100% !important;
 
+        // ── HARD CONSTRAINT: Camera feed strictly scaled down ──
         .video-wrapper {
-            max-width: 240px !important; // Sizing balanced kiya realme display ke liye
-            height: 180px !important;    
-            margin: 0 auto 0.75rem !important;
+            max-width: 140px !important; // Layout scale down kiya
+            height: 110px !important;    // Strictly locked height bounds to stop expanding script streams
+            margin: 0 auto 0.25rem auto !important;
         }
 
         h2 {
-            font-size: 1.1rem;
-            margin-bottom: 0.4rem;
+            font-size: 0.95rem !important;
+            margin: 0 0 0.15rem 0 !important;
         }
 
-        // Button ko mobile screen workspace par direct center anchor de diya
+        .expression-badge {
+            margin-bottom: 0.25rem !important;
+            padding: 1px 4px !important;
+            font-size: 0.6rem !important;
+        }
+
+        // Button ko safely pull-up karke layout flow me display force kiya
         .detect-btn {
             display: flex !important;
-            width: 80%; // Stretches button for easier tap reach
-            max-width: 240px;
-            padding: 10px 16px;
-            font-size: 0.85rem;
-            margin: 8px auto 0 auto !important;
-            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+            width: 140px !important; // Explicit size match with video wrapper box
+            padding: 8px 12px !important;
+            font-size: 0.75rem !important;
+            margin: 4px auto 0 auto !important;
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
+            background: #ffffff !important;
+            color: #000000 !important;
         }
     }
 }
